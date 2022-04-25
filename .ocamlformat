@@ -1,0 +1,7 @@
+margin = 120
+break-cases = fit
+module-item-spacing = sparse
+field-space = loose
+type-decl = sparse
+parse-docstrings = true
+wrap-comments = true
