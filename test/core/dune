@@ -1,0 +1,4 @@
+(test
+ (name ocaml_qrcode_core_test)
+ (flags (:standard -safe-string))
+ (libraries ocaml-qrcode.core alcotest))

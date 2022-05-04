@@ -7,12 +7,21 @@ type t = {
 }
 
 type bit =
-  | One
-  | Zero
+  [ `One
+  | `Zero
+  ]
+
+let show_bit = function `Zero -> "0" | `One -> "1"
+
+let pp_bit fmt t = Format.fprintf fmt "%s" @@ show_bit t
 
 type bit_result =
   | Continue of bit
   | Eos
+
+let pp_bit_result fmt = function
+  | Continue bit -> Format.fprintf fmt "Continue %s" @@ show_bit bit
+  | Eos -> Format.fprintf fmt "Eos"
 
 let create () = { current_bits = 0; bits = 0; buffer = Array.make 1 Stdint.Uint128.zero }
 
@@ -43,7 +52,7 @@ let put_data data t =
     { t with buffer = t.buffer; bits = next_bits })
   else { t with bits = next_bits }
 
-let put ~data:bit t = match bit with One -> put_data Stdint.Uint128.one t | Zero -> put_data Stdint.Uint128.zero t
+let put ~data:bit t = match bit with `One -> put_data Stdint.Uint128.one t | `Zero -> put_data Stdint.Uint128.zero t
 
 let next t =
   if t.current_bits >= t.bits then Eos
@@ -52,4 +61,4 @@ let next t =
     let index = t.current_bits / Stdint.Uint128.bits and reminder = t.current_bits mod Stdint.Uint128.bits in
     let bit_mask = make_bitmask reminder in
     let value = Stdint.Uint128.(logand t.buffer.(index) bit_mask) in
-    if Stdint.Uint128.(compare zero value) = 0 then Continue Zero else Continue One)
+    if Stdint.Uint128.(compare zero value) = 0 then Continue `Zero else Continue `One)
