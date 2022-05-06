@@ -2,8 +2,8 @@
 
 type t = {
   mutable current_bits : int;
-  mutable bits : int;
-  mutable buffer : Stdint.Uint128.t array;
+  bits : int;
+  buffer : Stdint.Uint128.t array;
 }
 
 type bit =
@@ -47,7 +47,7 @@ let put_data data t =
   if data = Stdint.Uint128.one then (
     let reminder = next_bits mod Stdint.Uint128.bits in
     let target_bit = make_bitmask reminder in
-    let index = if reminder > 0 then next_bits / Stdint.Uint128.bits else succ (next_bits / Stdint.Uint128.bits) in
+    let index = next_bits / Stdint.Uint128.bits in
     t.buffer.(index) <- Stdint.Uint128.logor t.buffer.(index) target_bit;
     { t with buffer = t.buffer; bits = next_bits })
   else { t with bits = next_bits }
