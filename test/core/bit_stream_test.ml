@@ -42,12 +42,15 @@ let put_multi_value_test () =
 
 let put_1k_value_test () =
   let stream = ref @@ B.create () in
-  loop 1000 (fun _ -> stream := B.put ~data:`One !stream);
+  loop 1000 (fun index ->
+      let data = match index mod 2 with 1 -> `One | _ -> `Zero in
+      stream := B.put ~data !stream);
 
   loop 1000 (fun index ->
       let value = B.next !stream in
       let message = Printf.sprintf "count %d" index in
-      Alcotest.(check result_test) message B.(Continue `One) value)
+      let data = match index mod 2 with 1 -> `One | _ -> `Zero in
+      Alcotest.(check result_test) message B.(Continue data) value)
 
 let tests =
   [
