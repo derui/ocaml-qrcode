@@ -18,19 +18,19 @@ let create_test () =
 
 let put_zero_test () =
   let stream = B.create () in
-  let stream = B.put ~data:`Zero stream in
+  let stream = B.put ~bit:`Zero stream in
   let ret = B.next stream in
   Alcotest.(check result_test) "end of stream" B.(Continue `Zero) ret
 
 let put_one_test () =
   let stream = B.create () in
-  let stream = B.put ~data:`One stream in
+  let stream = B.put ~bit:`One stream in
   let ret = B.next stream in
   Alcotest.(check result_test) "end of stream" B.(Continue `One) ret
 
 let put_multi_value_test () =
   let stream = B.create () in
-  let stream = B.put ~data:`One stream |> B.put ~data:`Zero |> B.put ~data:`One in
+  let stream = B.put ~bit:`One stream |> B.put ~bit:`Zero |> B.put ~bit:`One in
   let ret1 = B.next stream in
   let ret2 = B.next stream in
   let ret3 = B.next stream in
@@ -43,11 +43,22 @@ let put_multi_value_test () =
 let put_1k_value_test () =
   let stream = ref @@ B.create () in
   loop 1000 (fun index ->
-      let data = match index mod 2 with 1 -> `One | _ -> `Zero in
-      stream := B.put ~data !stream);
+      let bit = match index mod 2 with 1 -> `One | _ -> `Zero in
+      stream := B.put ~bit !stream);
 
   loop 1000 (fun index ->
       let value = B.next !stream in
+      let message = Printf.sprintf "count %d" index in
+      let data = match index mod 2 with 1 -> `One | _ -> `Zero in
+      Alcotest.(check result_test) message B.(Continue data) value)
+
+let puts_1k_value_test () =
+  let stream = B.create () in
+  let list = List.init 1000 (fun index -> match index mod 2 with 1 -> `One | _ -> `Zero) in
+  let stream = B.puts ~data:list stream in
+
+  loop 1000 (fun index ->
+      let value = B.next stream in
       let message = Printf.sprintf "count %d" index in
       let data = match index mod 2 with 1 -> `One | _ -> `Zero in
       Alcotest.(check result_test) message B.(Continue data) value)
@@ -59,4 +70,5 @@ let tests =
     Alcotest.test_case "can put one into stream" `Quick put_one_test;
     Alcotest.test_case "can put multi value into" `Quick put_multi_value_test;
     Alcotest.test_case "can put 1,000 values" `Quick put_1k_value_test;
+    Alcotest.test_case "can put 1,000 values one time" `Quick puts_1k_value_test;
   ]

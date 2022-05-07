@@ -52,7 +52,9 @@ let put_data data t =
     { t with buffer = t.buffer; bits = next_bits })
   else { t with bits = next_bits }
 
-let put ~data:bit t = match bit with `One -> put_data Stdint.Uint128.one t | `Zero -> put_data Stdint.Uint128.zero t
+let put ~bit t = match bit with `One -> put_data Stdint.Uint128.one t | `Zero -> put_data Stdint.Uint128.zero t
+
+let puts ~data t = List.fold_left (fun stream bit -> put ~bit stream) t data
 
 let next t =
   if t.current_bits >= t.bits then Eos

@@ -21,7 +21,10 @@ val pp_bit_result : Format.formatter -> bit_result -> unit
 val create : unit -> t
 (** [create t] get new stream *)
 
-val put : data:[< `One | `Zero ] -> t -> t
+val put : bit:bit -> t -> t
+(** [ put ~bit t] put a bit into [t] *)
+
+val puts : data:bit list -> t -> t
 (** [ put ~data t] put a bit into [t] *)
 
 val next : t -> bit_result
