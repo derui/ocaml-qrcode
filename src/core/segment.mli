@@ -18,3 +18,9 @@ module type S = sig
   val encode : metadata:Metadata.t -> generator:data_generator -> encoded
   (** [encode ~metadata ~generator] get a segment from data generated from generator and metadata *)
 end
+
+module Support : sig
+  val read_data : max_size:int -> data_generator -> char list option
+  (** [read_data ~max_size generator] read data from [generator] limit to [max_size]. If generator's internal maximum
+      size is greater than [max_size], return None *)
+end
