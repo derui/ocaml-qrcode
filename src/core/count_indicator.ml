@@ -24,4 +24,4 @@ let of_mode_with_version ~mode ~version =
   in
   { bits; count = 0 }
 
-let succ t = { t with count = succ t.count }
+let set_count t ~count = { t with count }

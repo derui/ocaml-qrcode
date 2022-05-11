@@ -24,3 +24,6 @@ module Support : sig
   (** [read_data ~max_size generator] read data from [generator] limit to [max_size]. If generator's internal maximum
       size is greater than [max_size], return None *)
 end
+
+val make : mode:Mode.t -> version:Version.t -> data:Bit_stream.t -> size:int -> t
+(** [make ~mode ~version ~data ~size] make segment from data *)

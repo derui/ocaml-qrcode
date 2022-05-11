@@ -26,3 +26,8 @@ module Support = struct
       in
       loop 0 []
 end
+
+let make ~mode ~version ~data ~size =
+  let indicator = Count_indicator.of_mode_with_version ~mode ~version in
+  let indicator = Count_indicator.set_count indicator ~count:size in
+  { mode; count_indicator = indicator; data }
