@@ -23,6 +23,9 @@ module Support : sig
   val read_data : max_size:int -> data_generator -> char list option
   (** [read_data ~max_size generator] read data from [generator] limit to [max_size]. If generator's internal maximum
       size is greater than [max_size], return None *)
+
+  val number_to_bit_list : bits:int -> int -> [ `One | `Zero ] list
+  (** [number_to_bit_list ~bits number] convert number into [bits]-sized bit list *)
 end
 
 val make : mode:Mode.t -> version:Version.t -> data:Bit_stream.t -> size:int -> t

@@ -25,6 +25,19 @@ module Support = struct
         else match generator () with None -> List.rev accum |> Option.some | Some c -> loop (succ count) (c :: accum)
       in
       loop 0 []
+
+  let number_to_bit_list ~bits number =
+    let mask = Stdint.Uint32.(shift_right max_int bits |> lognot |> to_int) in
+    let masked_number = number land mask in
+    let rec loop count current_number accum =
+      if count >= bits then accum
+      else
+        match current_number land 1 with
+        | 1 -> loop (succ count) (current_number lsr 1) (`One :: accum)
+        | _ -> loop (succ count) (current_number lsr 1) (`Zero :: accum)
+    in
+
+    loop 0 masked_number []
 end
 
 let make ~mode ~version ~data ~size =

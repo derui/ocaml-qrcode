@@ -4,19 +4,6 @@ let to_number = function
   | '0' .. '9' as v -> Ok (Char.code v - Char.code '0')
   | _ as v -> Error (S.Invalid_data (Printf.sprintf "Can not use character %c in number mode" v))
 
-let number_to_bit_list ~bits number =
-  let mask = Stdint.Uint32.(shift_right max_int bits |> lognot |> to_int) in
-  let masked_number = number land mask in
-  let rec loop count current_number accum =
-    if count >= bits then accum
-    else
-      match current_number land 1 with
-      | 1 -> loop (succ count) (current_number lsr 1) (`One :: accum)
-      | _ -> loop (succ count) (current_number lsr 1) (`Zero :: accum)
-  in
-
-  loop 0 masked_number []
-
 let list_to_number_data list =
   let open Std.Result.Let_syntax in
   let rec loop accum = function
@@ -50,7 +37,8 @@ module Core : S.S = struct
         let stream =
           List.fold_left
             (fun stream (number, bits) ->
-              number_to_bit_list ~bits number |> List.fold_left (fun stream bit -> Bit_stream.put ~bit stream) stream)
+              S.Support.number_to_bit_list ~bits number
+              |> List.fold_left (fun stream bit -> Bit_stream.put ~bit stream) stream)
             stream number_list
         in
         Ok (S.make ~mode:metadata.mode ~version:metadata.version ~data:stream ~size:(List.length data))
