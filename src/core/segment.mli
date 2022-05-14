@@ -4,11 +4,17 @@ type t = {
   data : Bit_stream.t;
 }
 
-type encoding_error =
-  | Invalid_data of string
-  | Data_size_overflow of string * int  (** encoding error *)
+module Encoding_error : sig
+  type t =
+    | Invalid_data of string
+    | Data_size_overflow of string * int  (** encoding error *)
 
-type encoded = (t, encoding_error) result
+  val pp : Format.formatter -> t -> unit
+
+  val show : t -> string
+end
+
+type encoded = (t, Encoding_error.t) result
 (** type of encoding result *)
 
 type data_generator = unit -> char option

@@ -4,11 +4,19 @@ type t = {
   data : Bit_stream.t;
 }
 
-type encoding_error =
-  | Invalid_data of string
-  | Data_size_overflow of string * int
+module Encoding_error = struct
+  type t =
+    | Invalid_data of string
+    | Data_size_overflow of string * int
 
-type encoded = (t, encoding_error) result
+  let show = function
+    | Invalid_data data -> Printf.sprintf "Invalid_data(%s)" data
+    | Data_size_overflow (msg, size) -> Printf.sprintf "Data_size_overflow(msg = %s, size = %d)" msg size
+
+  let pp fmt t = Format.fprintf fmt "%s" @@ show t
+end
+
+type encoded = (t, Encoding_error.t) result
 
 type data_generator = unit -> char option
 
@@ -27,8 +35,6 @@ module Support = struct
       loop 0 []
 
   let number_to_bit_list ~bits number =
-    let mask = Stdint.Uint32.(shift_right max_int bits |> lognot |> to_int) in
-    let masked_number = number land mask in
     let rec loop count current_number accum =
       if count >= bits then accum
       else
@@ -37,7 +43,7 @@ module Support = struct
         | _ -> loop (succ count) (current_number lsr 1) (`Zero :: accum)
     in
 
-    loop 0 masked_number []
+    loop 0 number []
 end
 
 let make ~mode ~version ~data ~size =

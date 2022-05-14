@@ -29,3 +29,6 @@ val puts : data:bit list -> t -> t
 
 val next : t -> bit_result
 (** [next t] get a next bit. If read position of stream is reached end of stream, return [Eos] *)
+
+val to_list : t -> bit list
+(** [to_list t] get list contains all bit sequentially *)

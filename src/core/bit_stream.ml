@@ -64,3 +64,7 @@ let next t =
     let bit_mask = make_bitmask reminder in
     let value = Stdint.Uint128.(logand t.buffer.(index) bit_mask) in
     if Stdint.Uint128.(compare zero value) = 0 then Continue `Zero else Continue `One)
+
+let to_list t =
+  let rec loop accum = match next t with Eos -> List.rev accum | Continue b -> loop (b :: accum) in
+  loop []
