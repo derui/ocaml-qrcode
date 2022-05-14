@@ -14,3 +14,5 @@ let to_bits ~stream = function
   | Number -> B.puts ~data:[ `Zero; `Zero; `Zero; `One ] stream
   | Alphabet -> B.puts ~data:[ `Zero; `Zero; `One; `Zero ] stream
   | Byte -> B.puts ~data:[ `Zero; `One; `Zero; `Zero ] stream
+
+let bit_size = 4

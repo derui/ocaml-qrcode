@@ -7,3 +7,7 @@ end
 module Alphabet : sig
   include Segment.S
 end
+
+module Byte : sig
+  include Segment.S
+end

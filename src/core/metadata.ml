@@ -4,6 +4,7 @@ type t = {
   error_correction_level : Error_correction.level;
   word_size : Stdint.Uint32.t;
   bit_size : Stdint.Uint32.t;
+  data_size : Stdint.Uint32.t;
 }
 
 let to_word_size ~version ~error_correction_level =
@@ -171,13 +172,35 @@ let to_word_size ~version ~error_correction_level =
   | V_40, Quality -> 1666
   | V_40, High -> 1276
 
+let to_number_data_size data_bit_size =
+  let characters = data_bit_size / 10 * 3 in
+  let reminder = match data_bit_size mod 10 with 7 | 8 | 9 -> 2 | 4 | 5 | 6 -> 1 | _ -> 0 in
+  characters + reminder
+
+let to_alphabet_data_size data_bit_size =
+  let characters = data_bit_size / 11 * 2 in
+  let reminder = match data_bit_size mod 11 with 7 | 8 | 9 | 10 -> 1 | _ -> 0 in
+  characters + reminder
+
 let make ~version ~mode ~error_correction_level =
   let word_size = to_word_size ~version ~error_correction_level in
   let bit_size = word_size * 8 in
+  let indicator_bits =
+    let v = Count_indicator.of_mode_with_version ~mode ~version in
+    v.bits
+  in
+  let data_bit_size = bit_size - indicator_bits - Mode.bit_size in
+  let data_size =
+    match mode with
+    | Mode.Number -> to_number_data_size data_bit_size
+    | Mode.Alphabet -> to_alphabet_data_size data_bit_size
+    | Mode.Byte -> data_bit_size / 8
+  in
   {
     version;
     mode;
     error_correction_level;
     word_size = Stdint.Uint32.of_int word_size;
     bit_size = Stdint.Uint32.of_int bit_size;
+    data_size = Stdint.Uint32.of_int data_size;
   }

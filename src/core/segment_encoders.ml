@@ -2,7 +2,7 @@ module S = Segment
 
 let encode' ~metadata ~generator ~list_to_number_data =
   let stream = Bit_stream.create () in
-  let max_size = Stdint.Uint32.to_int metadata.Metadata.word_size in
+  let max_size = Stdint.Uint32.to_int metadata.Metadata.data_size in
   match S.Support.read_data ~max_size generator with
   | None -> Error (S.Encoding_error.Data_size_overflow ("Can not accept size of data greater than", max_size))
   | Some data ->
@@ -15,7 +15,7 @@ let encode' ~metadata ~generator ~list_to_number_data =
             |> List.fold_left (fun stream bit -> Bit_stream.put ~bit stream) stream)
           stream number_list
       in
-      Ok (S.make ~mode:metadata.mode ~version:metadata.version ~data:stream ~size:(List.length data))
+      Ok (S.make ~mode:metadata.Metadata.mode ~version:metadata.version ~data:stream ~size:(List.length data))
 
 module Number : S.S = struct
   let to_number = function
@@ -73,6 +73,22 @@ module Alphabet : S.S = struct
       | [ a ] ->
           let* a = to_number a in
           loop ((a, 6) :: accum) []
+    in
+    loop [] list
+
+  let encode ~metadata ~generator = encode' ~metadata ~generator ~list_to_number_data
+end
+
+module Byte : S.S = struct
+  let to_number v = Ok (Char.code v)
+
+  let list_to_number_data list =
+    let open Std.Result.Let_syntax in
+    let rec loop accum = function
+      | [] -> List.rev accum |> Result.ok
+      | a :: rest ->
+          let* a = to_number a in
+          loop ((a, 8) :: accum) rest
     in
     loop [] list
 
