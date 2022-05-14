@@ -56,8 +56,19 @@ let invalid_data_test () =
     ~expected:(Error (S.Encoding_error.Invalid_data "Can not use character 'a' in number mode"))
     ~actual:encoded
 
+let size_overflow_test () =
+  let metadata = M.make ~version:V.V_1 ~mode:Mode.Number ~error_correction_level:E.High in
+  let generator = data_to_generator ("1234567890" |> String.to_seq |> List.of_seq) in
+
+  let encoded = Encoder.encode ~metadata ~generator in
+  Alcotest.(check' @@ result (of_pp Fmt.nop) error_testable)
+    ~msg:"error"
+    ~expected:(Error (S.Encoding_error.Data_size_overflow ("Can not accept size of data greater than", 9)))
+    ~actual:encoded
+
 let tests =
   [
     Alcotest.test_case "can encode valid number data" `Quick encode_test;
     Alcotest.test_case "can not encode if generator returns invalid data" `Quick invalid_data_test;
+    Alcotest.test_case "can not encode if generator large size" `Quick size_overflow_test;
   ]
