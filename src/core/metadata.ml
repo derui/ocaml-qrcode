@@ -186,7 +186,7 @@ let make ~version ~mode ~error_correction_level =
   let word_size = to_word_size ~version ~error_correction_level in
   let bit_size = word_size * 8 in
   let indicator_bits =
-    let v = Count_indicator.of_mode_with_version ~mode ~version in
+    let v = Count_indicator.make ~mode ~version in
     v.bits
   in
   let data_bit_size = bit_size - indicator_bits - Mode.bit_size in

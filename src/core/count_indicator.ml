@@ -7,7 +7,7 @@ let show { bits; count } = Printf.sprintf "{bits = %d, count = %d}" bits count
 
 let pp fmt t = Format.fprintf fmt "%s" @@ show t
 
-let of_mode_with_version ~mode ~version =
+let make ~mode ~version =
   let bits =
     match mode with
     | Mode.Number -> (
