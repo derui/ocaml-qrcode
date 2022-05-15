@@ -2,6 +2,7 @@ type t = private {
   version : Version.t;
   mode : Mode.t;
   error_correction_level : Error_correction.level;
+  total_size : Stdint.Uint32.t;
   word_size : Stdint.Uint32.t;
   bit_size : Stdint.Uint32.t;
   data_size : Stdint.Uint32.t;

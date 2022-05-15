@@ -2,6 +2,7 @@ type t = {
   version : Version.t;
   mode : Mode.t;
   error_correction_level : Error_correction.level;
+  total_size : Stdint.Uint32.t;
   word_size : Stdint.Uint32.t;
   bit_size : Stdint.Uint32.t;
   data_size : Stdint.Uint32.t;
@@ -183,6 +184,7 @@ let to_alphabet_data_size data_bit_size =
   characters + reminder
 
 let make ~version ~mode ~error_correction_level =
+  let total_size = Version.to_data_capacity version in
   let word_size = to_word_size ~version ~error_correction_level in
   let bit_size = word_size * 8 in
   let indicator_bits =
@@ -200,6 +202,7 @@ let make ~version ~mode ~error_correction_level =
     version;
     mode;
     error_correction_level;
+    total_size = Stdint.Uint32.of_int total_size;
     word_size = Stdint.Uint32.of_int word_size;
     bit_size = Stdint.Uint32.of_int bit_size;
     data_size = Stdint.Uint32.of_int data_size;
