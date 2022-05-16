@@ -27,6 +27,9 @@ val put : bit:bit -> t -> t
 val puts : data:bit list -> t -> t
 (** [ put ~data t] put a bit into [t] *)
 
+val put_int32 : data:int32 -> bits:int -> t -> t
+(** [put_int32 ~data ~bits t] put integer [data] into [t] from data's [bits]-th bit to LSB. *)
+
 val next : t -> bit_result
 (** [next t] get a next bit. If read position of stream is reached end of stream, return [Eos] *)
 

@@ -29,3 +29,7 @@ let make ~mode ~version =
   { bits; count = 0 }
 
 let set_count t ~count = { t with count }
+
+let output_to_bit_stream ~stream t =
+  let count = Int32.of_int t.count in
+  Bit_stream.put_int32 ~data:count ~bits:t.bits stream

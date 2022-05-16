@@ -33,6 +33,7 @@ module Block = struct
   let split ~metadata stream =
     let open Version in
     let module E = Error_correction in
+    let stream = Bit_stream.clone stream in
     let blocks =
       match (metadata.Metadata.version, metadata.error_correction_level) with
       | V_1, E.Low -> count_loop 1 @@ split_internal ~data_word_size:19 ~total_word_size:26 stream
