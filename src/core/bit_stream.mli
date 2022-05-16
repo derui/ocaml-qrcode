@@ -32,3 +32,7 @@ val next : t -> bit_result
 
 val to_list : t -> bit list
 (** [to_list t] get list contains all bit sequentially *)
+
+val clone : t -> t
+(** [clone t] get cloned stream. A stream returned from this function is not related original stream, so user can get
+    bits without affects to original stream *)

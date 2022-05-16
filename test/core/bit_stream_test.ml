@@ -63,6 +63,13 @@ let puts_1k_value_test () =
       let data = match index mod 2 with 1 -> `One | _ -> `Zero in
       Alcotest.(check result_test) message B.(Continue data) value)
 
+let clone_test () =
+  let stream = B.create () in
+  let stream = B.put ~bit:`One stream in
+  let cloned = B.clone stream in
+  let actual = B.next stream and expected = B.next cloned in
+  Alcotest.(check' result_test) ~msg:"same bit" ~actual ~expected
+
 let tests =
   [
     Alcotest.test_case "can create new stream" `Quick create_test;
@@ -71,4 +78,5 @@ let tests =
     Alcotest.test_case "can put multi value into" `Quick put_multi_value_test;
     Alcotest.test_case "can put 1,000 values" `Quick put_1k_value_test;
     Alcotest.test_case "can put 1,000 values one time" `Quick puts_1k_value_test;
+    Alcotest.test_case "can clone stream without affection" `Quick clone_test;
   ]

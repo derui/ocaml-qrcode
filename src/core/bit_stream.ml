@@ -68,3 +68,5 @@ let next t =
 let to_list t =
   let rec loop accum = match next t with Eos -> List.rev accum | Continue b -> loop (b :: accum) in
   loop []
+
+let clone t = { current_bits = 0; bits = t.bits; buffer = Array.copy t.buffer }
