@@ -83,3 +83,8 @@ let to_list t =
   loop []
 
 let clone t = { current_bits = 0; bits = t.bits; buffer = Array.copy t.buffer }
+
+let concat ~first ~last =
+  let data = to_list first @ to_list last in
+  let stream = create () in
+  puts ~data stream

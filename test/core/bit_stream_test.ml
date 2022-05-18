@@ -83,6 +83,21 @@ let put_int32_test () =
   Alcotest.(check' result_test) ~msg:"3rd bit" ~expected:B.(Continue `One) ~actual:ret3;
   Alcotest.(check' result_test) ~msg:"4th bit" ~expected:B.(Continue `One) ~actual:ret4
 
+let concat_test () =
+  let first = B.create () in
+  let last = B.create () in
+  let first = B.puts ~data:[ `One; `Zero ] first in
+  let last = B.puts ~data:[ `Zero; `One ] last in
+  let stream = B.concat ~first ~last in
+  let ret1 = B.next stream in
+  let ret2 = B.next stream in
+  let ret3 = B.next stream in
+  let ret4 = B.next stream in
+  Alcotest.(check' result_test) ~msg:"1st bit" ~expected:B.(Continue `One) ~actual:ret1;
+  Alcotest.(check' result_test) ~msg:"2nd bit" ~expected:B.(Continue `Zero) ~actual:ret2;
+  Alcotest.(check' result_test) ~msg:"3rd bit" ~expected:B.(Continue `Zero) ~actual:ret3;
+  Alcotest.(check' result_test) ~msg:"4th bit" ~expected:B.(Continue `One) ~actual:ret4
+
 let tests =
   [
     Alcotest.test_case "can create new stream" `Quick create_test;
@@ -93,4 +108,5 @@ let tests =
     Alcotest.test_case "can put 1,000 values one time" `Quick puts_1k_value_test;
     Alcotest.test_case "can clone stream without affection" `Quick clone_test;
     Alcotest.test_case "can put int32 with bits" `Quick put_int32_test;
+    Alcotest.test_case "can concatenate two bit streams" `Quick concat_test;
   ]
