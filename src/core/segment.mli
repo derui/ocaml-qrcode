@@ -36,3 +36,6 @@ end
 
 val make : mode:Mode.t -> version:Version.t -> data:Bit_stream.t -> size:int -> t
 (** [make ~mode ~version ~data ~size] make segment from data *)
+
+val output_to_bit_stream : t -> stream:Bit_stream.t -> Bit_stream.t
+(** [output_to_bit_stream t ~stream] output segment's bit sequence into [stream]. *)

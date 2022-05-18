@@ -49,3 +49,9 @@ end
 let make ~mode ~version ~data ~size =
   let indicator = Count_indicator.make ~mode ~version |> Count_indicator.set_count ~count:size in
   { mode; count_indicator = indicator; data }
+
+let output_to_bit_stream t ~stream =
+  let stream = Mode.to_bits ~stream t.mode in
+  let stream = Count_indicator.output_to_bit_stream ~stream t.count_indicator in
+  let stream = Bit_stream.concat ~first:stream ~last:t.data in
+  Bit_stream.puts ~data:[ `Zero; `Zero; `Zero; `Zero ] stream
