@@ -25,6 +25,8 @@ let pp_bit_result fmt = function
 
 let create () = { current_bits = 0; bits = 0; buffer = Array.make 1 Stdint.Uint128.zero }
 
+let count { bits; _ } = bits
+
 let make_bitmask index =
   let shift = pred (Stdint.Uint128.bits - index) in
   Stdint.Uint128.(shift_left one shift |> max zero)
@@ -83,6 +85,24 @@ let to_list t =
   loop []
 
 let clone t = { current_bits = 0; bits = t.bits; buffer = Array.copy t.buffer }
+
+let to_byte_list t =
+  let count_as_byte = (t.bits / 8) + if t.bits mod 8 > 0 then 1 else 0 in
+  let rec read_byte count accum stream =
+    if count >= 8 then Stdint.Uint8.of_int accum
+    else
+      match next stream with
+      | Eos -> Stdint.Uint8.of_int accum
+      | Continue `One -> read_byte (succ count) ((accum lsl 1) lor 1) stream
+      | Continue `Zero -> read_byte (succ count) (accum lsl 1) stream
+  in
+  let rec read_bytes count accum stream =
+    if count >= count_as_byte then List.rev accum
+    else
+      let byte = read_byte 0 0 stream in
+      read_bytes (succ count) (byte :: accum) stream
+  in
+  read_bytes 0 [] @@ clone t
 
 let concat ~first ~last =
   let data = to_list first @ to_list last in

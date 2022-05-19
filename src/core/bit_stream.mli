@@ -21,6 +21,9 @@ val pp_bit_result : Format.formatter -> bit_result -> unit
 val create : unit -> t
 (** [create t] get new stream *)
 
+val count : t -> int
+(** [count t] get the bit count of stream *)
+
 val put : bit:bit -> t -> t
 (** [ put ~bit t] put a bit into [t] *)
 
@@ -39,6 +42,10 @@ val concat : first:t -> last:t -> t
 
 val to_list : t -> bit list
 (** [to_list t] get list contains all bit sequentially *)
+
+val to_byte_list : t -> Stdint.uint8 list
+(** [to_byte_list t] get list of byte that converted from [t] bit sequentially. If bit stream have reminder when divided
+    by 8, last byte will irregular. *)
 
 val clone : t -> t
 (** [clone t] get cloned stream. A stream returned from this function is not related original stream, so user can get
