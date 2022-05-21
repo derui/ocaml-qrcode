@@ -29,3 +29,7 @@ let error_testable = Alcotest.of_pp S.Encoding_error.pp
 let mode_testable = Alcotest.result (Alcotest.of_pp Mode.pp) error_testable
 
 let count_indicator_testable = Alcotest.result (Alcotest.of_pp Ocaml_qrcode_core.Count_indicator.pp) error_testable
+
+let code_word_testable =
+  let uint8 = Alcotest.testable Stdint.Uint8.printer_bin (fun a b -> Stdint.Uint8.compare a b = 0) in
+  Alcotest.array uint8

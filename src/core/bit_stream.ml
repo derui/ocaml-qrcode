@@ -65,7 +65,6 @@ let put_int32 ~data ~bits t =
       if count >= bits then accum
       else
         let data = Int32.logand current_data 1l in
-        Printf.printf "bit = %d, data = %ld\n" count data;
         let data = match data with 1l -> `One | _ -> `Zero in
         loop (succ count) Int32.(shift_right_logical current_data 1) (data :: accum)
     in

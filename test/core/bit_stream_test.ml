@@ -83,6 +83,27 @@ let put_int32_test () =
   Alcotest.(check' result_test) ~msg:"3rd bit" ~expected:B.(Continue `One) ~actual:ret3;
   Alcotest.(check' result_test) ~msg:"4th bit" ~expected:B.(Continue `One) ~actual:ret4
 
+let put_zero_leading_int32_test () =
+  let stream = B.create () in
+  let data = (1 lsl 3) lor (1 lsl 1) lor 1 |> Int32.of_int in
+  let stream = B.put_int32 ~data ~bits:8 stream in
+  let ret1 = B.next stream in
+  let ret2 = B.next stream in
+  let ret3 = B.next stream in
+  let ret4 = B.next stream in
+  let ret5 = B.next stream in
+  let ret6 = B.next stream in
+  let ret7 = B.next stream in
+  let ret8 = B.next stream in
+  Alcotest.(check' result_test) ~msg:"position 1" ~expected:B.(Continue `Zero) ~actual:ret1;
+  Alcotest.(check' result_test) ~msg:"position 2" ~expected:B.(Continue `Zero) ~actual:ret2;
+  Alcotest.(check' result_test) ~msg:"position 3" ~expected:B.(Continue `Zero) ~actual:ret3;
+  Alcotest.(check' result_test) ~msg:"position 4" ~expected:B.(Continue `Zero) ~actual:ret4;
+  Alcotest.(check' result_test) ~msg:"position 5" ~expected:B.(Continue `One) ~actual:ret5;
+  Alcotest.(check' result_test) ~msg:"position 6" ~expected:B.(Continue `Zero) ~actual:ret6;
+  Alcotest.(check' result_test) ~msg:"position 7" ~expected:B.(Continue `One) ~actual:ret7;
+  Alcotest.(check' result_test) ~msg:"position 8" ~expected:B.(Continue `One) ~actual:ret8
+
 let concat_test () =
   let first = B.create () in
   let last = B.create () in
@@ -108,5 +129,6 @@ let tests =
     Alcotest.test_case "can put 1,000 values one time" `Quick puts_1k_value_test;
     Alcotest.test_case "can clone stream without affection" `Quick clone_test;
     Alcotest.test_case "can put int32 with bits" `Quick put_int32_test;
+    Alcotest.test_case "can put int32 that leading zero bits" `Quick put_zero_leading_int32_test;
     Alcotest.test_case "can concatenate two bit streams" `Quick concat_test;
   ]
