@@ -2,7 +2,7 @@
 
     Symbol defined in this module is only GF(2^8). *)
 
-type symbol = Stdint.uint8
+type t = Stdint.uint8
 
 let symbols =
   let open Stdint.Uint16 in
