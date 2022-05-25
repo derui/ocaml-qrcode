@@ -10,29 +10,27 @@ type t = S.t array
 
 let polynomials =
   let tbl : (validated number, S.t array) Hashtbl.t = Hashtbl.create 36 in
-  Hashtbl.add tbl 2 @@ Array.map s [| 0; 25; 1 |];
-  Hashtbl.add tbl 5 @@ Array.map s [| 0; 113; 164; 166; 119; 10 |];
-  Hashtbl.add tbl 6 @@ Array.map s [| 0; 166; 0; 134; 5; 176; 15 |];
-  Hashtbl.add tbl 7 @@ Array.map s [| 0; 87; 229; 146; 149; 238; 102; 21 |];
-  Hashtbl.add tbl 8 @@ Array.map s [| 0; 175; 238; 208; 249; 215; 252; 196; 28 |];
-  Hashtbl.add tbl 10 @@ Array.map s [| 0; 251; 67; 46; 61; 118; 70; 64; 94; 32; 45 |];
-  Hashtbl.add tbl 13 @@ Array.map s [| 0; 74; 152; 176; 100; 86; 100; 106; 104; 130; 218; 206; 140; 78 |];
-  Hashtbl.add tbl 14 @@ Array.map s [| 0; 199; 249; 155; 48; 190; 124; 218; 137; 216; 87; 207; 59; 22; 91 |];
-  Hashtbl.add tbl 15 @@ Array.map s [| 0; 8; 183; 61; 91; 202; 37; 51; 58; 58; 237; 140; 124; 5; 99; 105 |];
-  Hashtbl.add tbl 16 @@ Array.map s [| 0; 120; 104; 107; 109; 102; 161; 76; 3; 91; 191; 147; 169; 182; 194; 225; 120 |];
-  Hashtbl.add tbl 17
-  @@ Array.map s [| 0; 43; 139; 206; 78; 43; 239; 123; 206; 214; 147; 24; 99; 150; 39; 243; 163; 136 |];
+  Hashtbl.add tbl 2 @@ Array.map s [| 25; 1 |];
+  Hashtbl.add tbl 5 @@ Array.map s [| 113; 164; 166; 119; 10 |];
+  Hashtbl.add tbl 6 @@ Array.map s [| 166; 0; 134; 5; 176; 15 |];
+  Hashtbl.add tbl 7 @@ Array.map s [| 87; 229; 146; 149; 238; 102; 21 |];
+  Hashtbl.add tbl 8 @@ Array.map s [| 175; 238; 208; 249; 215; 252; 196; 28 |];
+  Hashtbl.add tbl 10 @@ Array.map s [| 251; 67; 46; 61; 118; 70; 64; 94; 32; 45 |];
+  Hashtbl.add tbl 13 @@ Array.map s [| 74; 152; 176; 100; 86; 100; 106; 104; 130; 218; 206; 140; 78 |];
+  Hashtbl.add tbl 14 @@ Array.map s [| 199; 249; 155; 48; 190; 124; 218; 137; 216; 87; 207; 59; 22; 91 |];
+  Hashtbl.add tbl 15 @@ Array.map s [| 8; 183; 61; 91; 202; 37; 51; 58; 58; 237; 140; 124; 5; 99; 105 |];
+  Hashtbl.add tbl 16 @@ Array.map s [| 120; 104; 107; 109; 102; 161; 76; 3; 91; 191; 147; 169; 182; 194; 225; 120 |];
+  Hashtbl.add tbl 17 @@ Array.map s [| 43; 139; 206; 78; 43; 239; 123; 206; 214; 147; 24; 99; 150; 39; 243; 163; 136 |];
   Hashtbl.add tbl 18
-  @@ Array.map s [| 0; 215; 234; 158; 94; 184; 97; 118; 170; 79; 187; 152; 148; 252; 179; 5; 98; 96; 153 |];
+  @@ Array.map s [| 215; 234; 158; 94; 184; 97; 118; 170; 79; 187; 152; 148; 252; 179; 5; 98; 96; 153 |];
   Hashtbl.add tbl 20
-  @@ Array.map s [| 0; 17; 60; 79; 50; 61; 163; 26; 187; 202; 180; 221; 225; 83; 239; 156; 164; 212; 212; 188; 190 |];
+  @@ Array.map s [| 17; 60; 79; 50; 61; 163; 26; 187; 202; 180; 221; 225; 83; 239; 156; 164; 212; 212; 188; 190 |];
   Hashtbl.add tbl 22
   @@ Array.map s
-       [| 0; 210; 171; 247; 242; 93; 230; 14; 109; 221; 53; 200; 74; 8; 172; 98; 80; 219; 134; 160; 105; 165; 231 |];
+       [| 210; 171; 247; 242; 93; 230; 14; 109; 221; 53; 200; 74; 8; 172; 98; 80; 219; 134; 160; 105; 165; 231 |];
   Hashtbl.add tbl 24
   @@ Array.map s
        [|
-         0;
          229;
          121;
          135;
@@ -61,7 +59,6 @@ let polynomials =
   Hashtbl.add tbl 26
   @@ Array.map s
        [|
-         0;
          173;
          125;
          158;
@@ -92,7 +89,6 @@ let polynomials =
   Hashtbl.add tbl 28
   @@ Array.map s
        [|
-         0;
          168;
          223;
          200;
@@ -125,7 +121,6 @@ let polynomials =
   Hashtbl.add tbl 30
   @@ Array.map s
        [|
-         0;
          42;
          173;
          145;
@@ -160,7 +155,6 @@ let polynomials =
   Hashtbl.add tbl 32
   @@ Array.map s
        [|
-         0;
          10;
          6;
          106;
@@ -197,7 +191,6 @@ let polynomials =
   Hashtbl.add tbl 34
   @@ Array.map s
        [|
-         0;
          111;
          77;
          146;
@@ -236,7 +229,6 @@ let polynomials =
   Hashtbl.add tbl 36
   @@ Array.map s
        [|
-         0;
          200;
          183;
          98;
@@ -277,7 +269,6 @@ let polynomials =
   Hashtbl.add tbl 40
   @@ Array.map s
        [|
-         0;
          59;
          116;
          79;
@@ -322,7 +313,6 @@ let polynomials =
   Hashtbl.add tbl 42
   @@ Array.map s
        [|
-         0;
          250;
          103;
          221;
@@ -369,7 +359,6 @@ let polynomials =
   Hashtbl.add tbl 44
   @@ Array.map s
        [|
-         0;
          190;
          7;
          61;
@@ -418,7 +407,6 @@ let polynomials =
   Hashtbl.add tbl 46
   @@ Array.map s
        [|
-         0;
          112;
          94;
          88;
@@ -469,7 +457,6 @@ let polynomials =
   Hashtbl.add tbl 48
   @@ Array.map s
        [|
-         0;
          228;
          25;
          196;
@@ -522,7 +509,6 @@ let polynomials =
   Hashtbl.add tbl 50
   @@ Array.map s
        [|
-         0;
          232;
          125;
          157;
@@ -577,7 +563,6 @@ let polynomials =
   Hashtbl.add tbl 52
   @@ Array.map s
        [|
-         0;
          116;
          50;
          86;
@@ -634,7 +619,6 @@ let polynomials =
   Hashtbl.add tbl 56
   @@ Array.map s
        [|
-         0;
          106;
          120;
          107;
@@ -695,7 +679,6 @@ let polynomials =
   Hashtbl.add tbl 58
   @@ Array.map s
        [|
-         0;
          82;
          116;
          26;
@@ -758,7 +741,6 @@ let polynomials =
   Hashtbl.add tbl 60
   @@ Array.map s
        [|
-         0;
          107;
          140;
          26;
@@ -823,7 +805,6 @@ let polynomials =
   Hashtbl.add tbl 62
   @@ Array.map s
        [|
-         0;
          65;
          202;
          113;
@@ -890,7 +871,6 @@ let polynomials =
   Hashtbl.add tbl 64
   @@ Array.map s
        [|
-         0;
          45;
          51;
          175;
@@ -959,7 +939,6 @@ let polynomials =
   Hashtbl.add tbl 66
   @@ Array.map s
        [|
-         0;
          5;
          118;
          222;
@@ -1030,7 +1009,6 @@ let polynomials =
   Hashtbl.add tbl 68
   @@ Array.map s
        [|
-         0;
          247;
          159;
          223;
