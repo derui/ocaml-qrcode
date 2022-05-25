@@ -2,14 +2,14 @@ module S = Rs_symbol
 
 type validated
 
-type 'validated t = int
-
-let to_validated v : validated t = v
+type 'validated number = int
 
 let s = S.of_symbol
 
+type t = S.t array
+
 let polynomials =
-  let tbl : (validated t, S.t array) Hashtbl.t = Hashtbl.create 36 in
+  let tbl : (validated number, S.t array) Hashtbl.t = Hashtbl.create 36 in
   Hashtbl.add tbl 2 @@ Array.map s [| 0; 25; 1 |];
   Hashtbl.add tbl 5 @@ Array.map s [| 0; 113; 164; 166; 119; 10 |];
   Hashtbl.add tbl 6 @@ Array.map s [| 0; 166; 0; 134; 5; 176; 15 |];
@@ -290,7 +290,7 @@ let polynomials =
          161;
          247;
          57;
-         1363;
+         163;
          56;
          235;
          106;
@@ -717,7 +717,8 @@ let polynomials =
          154;
          237;
          176;
-         141192;
+         141;
+         192;
          248;
          152;
          249;
@@ -982,7 +983,8 @@ let polynomials =
          65;
          137;
          178;
-         68111;
+         68;
+         111;
          95;
          101;
          41;
@@ -1097,4 +1099,9 @@ let polynomials =
          8;
          163;
          238;
-       |]
+       |];
+  tbl
+
+let to_validated v = Hashtbl.find_opt polynomials v |> Option.map (fun _ -> v)
+
+let from_validated : validated number -> t = fun v -> Hashtbl.find polynomials v

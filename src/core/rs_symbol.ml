@@ -4,6 +4,10 @@
 
 type t = Stdint.uint8
 
+let pp = Stdint.Uint8.printer_bin
+
+let show = Stdint.Uint8.to_string_bin
+
 let symbols =
   let open Stdint.Uint16 in
   let ( lor ) = logor in

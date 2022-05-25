@@ -7,4 +7,5 @@ let () =
       ("Segment", Segment_test.tests);
       ("Code word", Code_word_test.tests);
       ("RS coding symbol", Rs_symbol_test.tests);
+      ("RS coding polynomial", Rs_polynomial_test.tests);
     ]
