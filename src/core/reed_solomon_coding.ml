@@ -1,4 +1,4 @@
-module Block = struct
+module Blocks = struct
   type block = {
     total_word_size : Stdint.Uint8.t;
     data_word_size : Stdint.Uint8.t;
@@ -583,3 +583,47 @@ module Block = struct
     in
     { blocks }
 end
+
+type ec_block = Rs_symbol.t array
+
+type t = {
+  blocks : Blocks.t;
+  ec_blocks : ec_block list;
+}
+
+(** [calculate_ec block] calculate *)
+let calculate_ec blocks =
+  let circuit block =
+    let module U = Stdint.Uint8 in
+    let k = U.(block.Blocks.total_word_size - block.data_word_size |> to_int) in
+    let register = Array.make k U.zero in
+
+    let data = block.block_data in
+    let data_polynomial =
+      match Rs_polynomial.to_validated k |> Option.map Rs_polynomial.from_validated with
+      | None -> raise (Invalid_argument (Printf.sprintf "Invalid polynomial number: %d" k))
+      | Some v -> v
+    in
+
+    (* データを入力したときの回路。この中での加算と乗算は、GF(2^8)における加算と乗算を表す。 *)
+    let put_datum datum =
+      let greater_index = k - 1 in
+      let datum =
+        let open U in
+        datum + register.(greater_index)
+      in
+      Array.iteri
+        (fun idx _ ->
+          let coefficient = data_polynomial.(idx) in
+          let previous_data = if idx = 0 then U.zero else register.(pred idx) in
+          let open U in
+          register.(idx) <- (datum * coefficient) + previous_data)
+        register
+    in
+    Array.iter put_datum data;
+
+    (* registerを最上位から取得してくる。この時点のレジスタが、そのまま mod G(x) を実施した後の形となっている *)
+    register
+  in
+  let ec_blocks = List.map circuit blocks.Blocks.blocks in
+  { blocks; ec_blocks }
