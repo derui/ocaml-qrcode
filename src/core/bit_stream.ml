@@ -70,6 +70,17 @@ let put_int32 ~data ~bits t =
     in
     loop 0 data [] |> fun data -> puts ~data t
 
+let put_byte ~data t =
+  let module U = Stdint.Uint8 in
+  let rec loop count current_data accum =
+    if count >= U.bits then accum
+    else
+      let data = U.(logand current_data one) in
+      let data = if data = U.one then `One else `Zero in
+      loop (succ count) U.(shift_right_logical current_data 1) (data :: accum)
+  in
+  loop 0 data [] |> fun data -> puts ~data t
+
 let next t =
   if t.current_bits >= t.bits then Eos
   else (

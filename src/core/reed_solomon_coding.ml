@@ -592,7 +592,9 @@ type t = {
 }
 
 (** [calculate_ec block] calculate *)
-let calculate_ec blocks =
+let calculate_ec ~metadata code_word =
+  let stream = Code_word.to_bit_stream code_word in
+  let blocks = Blocks.split ~metadata stream in
   let circuit block =
     let module U = Stdint.Uint8 in
     let k = U.(block.Blocks.total_word_size - block.data_word_size |> to_int) in
@@ -605,7 +607,6 @@ let calculate_ec blocks =
       | Some v -> v
     in
 
-    (* データを入力したときの回路。この中での加算と乗算は、GF(2^8)における加算と乗算を表す。 *)
     let put_datum datum =
       let greater_index = k - 1 in
       let datum =
@@ -622,7 +623,6 @@ let calculate_ec blocks =
     in
     Array.iter put_datum data;
 
-    (* registerを最上位から取得してくる。この時点のレジスタが、そのまま mod G(x) を実施した後の形となっている *)
     register
   in
   let ec_blocks = List.map circuit blocks.Blocks.blocks in

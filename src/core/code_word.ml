@@ -25,7 +25,7 @@ let add_reminder_bits_if_necessary metadata stream =
   B.puts ~data:termination_bits stream
 
 let make ~segments ~metadata =
-  let stream = Bit_stream.create () in
+  let stream = B.create () in
   let stream = List.fold_left (fun stream segment -> Segment.output_to_bit_stream ~stream segment) stream segments in
   let stream = add_reminder_bits_if_necessary metadata stream in
   let stream_count = B.count stream in
@@ -38,3 +38,7 @@ let make ~segments ~metadata =
   let stream = B.puts ~data stream in
   let codewords = B.to_byte_list stream in
   { words = fill_reminder_codewords ~metadata ~codewords |> Array.of_list }
+
+let to_bit_stream { words } =
+  let stream = B.create () in
+  Array.fold_left (fun stream word -> B.put_byte ~data:word stream) stream words
