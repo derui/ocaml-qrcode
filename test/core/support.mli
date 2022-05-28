@@ -12,4 +12,6 @@ val mode_testable : (Mode.t, Segment.Encoding_error.t) result Alcotest.testable
 
 val count_indicator_testable : (Ocaml_qrcode_core.Count_indicator.t, Segment.Encoding_error.t) result Alcotest.testable
 
+val uint8_testable : Stdint.uint8 Alcotest.testable
+
 val code_word_testable : Ocaml_qrcode_core.Code_word.word array Alcotest.testable

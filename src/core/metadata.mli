@@ -10,3 +10,6 @@ type t = private {
 
 val make : version:Version.t -> mode:Mode.t -> error_correction_level:Error_correction.level -> t
 (** [make ~version ~mode ~error_correction_level] make a metadata for version/mode/error correction level *)
+
+val reminder_bit_count : t -> Stdint.uint8
+(** [reminder_bit_count t] count of reminder bit *)

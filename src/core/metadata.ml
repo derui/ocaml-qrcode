@@ -207,3 +207,11 @@ let make ~version ~mode ~error_correction_level =
     bit_size = Stdint.Uint32.of_int bit_size;
     data_size = Stdint.Uint32.of_int data_size;
   }
+
+let reminder_bit_count { version; _ } =
+  let capacity = Version.to_capacity version in
+  let all_modules =
+    (capacity.module_per_edge * capacity.module_per_edge)
+    - capacity.function_pattern_module_count - capacity.type_and_version_module_count
+  in
+  all_modules mod 8 |> Stdint.Uint8.of_int

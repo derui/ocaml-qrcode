@@ -8,4 +8,5 @@ let () =
       ("Code word", Code_word_test.tests);
       ("RS coding symbol", Rs_symbol_test.tests);
       ("RS coding polynomial", Rs_polynomial_test.tests);
+      ("Metadata", Metadata_test.tests);
     ]
