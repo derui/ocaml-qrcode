@@ -49,4 +49,19 @@ let reminder_bit_count_test () =
   Alcotest.(check' int) ~msg:"version 39" ~actual:(for_v V_39) ~expected:0;
   Alcotest.(check' int) ~msg:"version 40" ~actual:(for_v V_40) ~expected:0
 
-let tests = [ Alcotest.test_case "calculate reminder bit" `Quick reminder_bit_count_test ]
+let need_version_info_test () =
+  let module S = Support in
+  let for_v version =
+    M.make ~version ~mode:Mode.Byte ~error_correction_level:Error_correction.Low |> M.need_version_information
+  in
+  Alcotest.(check' bool) ~msg:"Not need on V1" ~actual:(for_v Version.V_1) ~expected:false;
+  Alcotest.(check' bool) ~msg:"Not need on V2" ~actual:(for_v Version.V_2) ~expected:false;
+  Alcotest.(check' bool) ~msg:"Not need on V6" ~actual:(for_v Version.V_6) ~expected:false;
+  Alcotest.(check' bool) ~msg:"Need on V7" ~actual:(for_v Version.V_7) ~expected:true;
+  Alcotest.(check' bool) ~msg:"Need on V40" ~actual:(for_v Version.V_40) ~expected:true
+
+let tests =
+  [
+    Alcotest.test_case "calculate reminder bit" `Quick reminder_bit_count_test;
+    Alcotest.test_case "need version information" `Quick need_version_info_test;
+  ]

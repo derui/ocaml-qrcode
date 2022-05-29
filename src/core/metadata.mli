@@ -13,3 +13,6 @@ val make : version:Version.t -> mode:Mode.t -> error_correction_level:Error_corr
 
 val reminder_bit_count : t -> Stdint.uint8
 (** [reminder_bit_count t] count of reminder bit *)
+
+val need_version_information : t -> bool
+(** [need_version_information t] return need version information on [t] *)

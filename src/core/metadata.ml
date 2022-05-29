@@ -215,3 +215,6 @@ let reminder_bit_count { version; _ } =
     - capacity.function_pattern_module_count - capacity.type_and_version_module_count
   in
   all_modules mod 8 |> Stdint.Uint8.of_int
+
+let need_version_information { version; _ } =
+  match version with Version.V_1 | V_2 | V_3 | V_4 | V_5 | V_6 -> false | _ -> true
