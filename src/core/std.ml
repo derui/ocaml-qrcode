@@ -16,7 +16,7 @@ module Array = struct
     let rec loop' current =
       if current > to_ then ()
       else (
-        f current t.(current - from);
+        f current t;
         loop' (succ current))
     in
     loop' from

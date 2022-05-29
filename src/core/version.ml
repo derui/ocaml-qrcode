@@ -47,6 +47,11 @@ type capacity = {
   type_and_version_module_count : int;
 }
 
+type alignment = {
+  count : int;
+  indices : int list;
+}
+
 let to_capacity t =
   let edge v = 21 + (4 * v) in
   let small_version = 31 and large_version = 67 in
@@ -173,3 +178,45 @@ let to_data_capacity = function
   | V_38 -> 3362
   | V_39 -> 3532
   | V_40 -> 3706
+
+let to_alignment_information = function
+  | V_1 -> { count = 0; indices = [] }
+  | V_2 -> { count = 1; indices = [ 6; 18 ] }
+  | V_3 -> { count = 1; indices = [ 6; 22 ] }
+  | V_4 -> { count = 1; indices = [ 6; 26 ] }
+  | V_5 -> { count = 1; indices = [ 6; 30 ] }
+  | V_6 -> { count = 1; indices = [ 6; 34 ] }
+  | V_7 -> { count = 6; indices = [ 6; 22; 38 ] }
+  | V_8 -> { count = 6; indices = [ 6; 24; 42 ] }
+  | V_9 -> { count = 6; indices = [ 6; 26; 46 ] }
+  | V_10 -> { count = 6; indices = [ 6; 28; 50 ] }
+  | V_11 -> { count = 6; indices = [ 6; 30; 54 ] }
+  | V_12 -> { count = 6; indices = [ 6; 32; 58 ] }
+  | V_13 -> { count = 6; indices = [ 6; 34; 62 ] }
+  | V_14 -> { count = 13; indices = [ 6; 26; 46; 66 ] }
+  | V_15 -> { count = 13; indices = [ 6; 26; 48; 70 ] }
+  | V_16 -> { count = 13; indices = [ 6; 26; 50; 74 ] }
+  | V_17 -> { count = 13; indices = [ 6; 30; 54; 78 ] }
+  | V_18 -> { count = 13; indices = [ 6; 30; 56; 82 ] }
+  | V_19 -> { count = 13; indices = [ 6; 30; 58; 86 ] }
+  | V_20 -> { count = 13; indices = [ 6; 34; 62; 90 ] }
+  | V_21 -> { count = 22; indices = [ 6; 28; 50; 72; 94 ] }
+  | V_22 -> { count = 22; indices = [ 6; 26; 50; 74; 98 ] }
+  | V_23 -> { count = 22; indices = [ 6; 30; 54; 78; 102 ] }
+  | V_24 -> { count = 22; indices = [ 6; 28; 54; 80; 106 ] }
+  | V_25 -> { count = 22; indices = [ 6; 32; 58; 84; 110 ] }
+  | V_26 -> { count = 22; indices = [ 6; 30; 58; 86; 114 ] }
+  | V_27 -> { count = 22; indices = [ 6; 34; 62; 90; 118 ] }
+  | V_28 -> { count = 33; indices = [ 6; 26; 50; 74; 98; 122 ] }
+  | V_29 -> { count = 33; indices = [ 6; 30; 54; 78; 102; 126 ] }
+  | V_30 -> { count = 33; indices = [ 6; 26; 52; 78; 104; 130 ] }
+  | V_31 -> { count = 33; indices = [ 6; 30; 56; 82; 108; 134 ] }
+  | V_32 -> { count = 33; indices = [ 6; 34; 60; 86; 112; 138 ] }
+  | V_33 -> { count = 33; indices = [ 6; 30; 58; 86; 114; 142 ] }
+  | V_34 -> { count = 33; indices = [ 6; 34; 62; 90; 118; 146 ] }
+  | V_35 -> { count = 46; indices = [ 6; 30; 54; 78; 102; 126; 150 ] }
+  | V_36 -> { count = 46; indices = [ 6; 24; 50; 76; 102; 128; 154 ] }
+  | V_37 -> { count = 46; indices = [ 6; 28; 54; 80; 106; 132; 158 ] }
+  | V_38 -> { count = 46; indices = [ 6; 32; 58; 84; 110; 136; 162 ] }
+  | V_39 -> { count = 46; indices = [ 6; 26; 54; 82; 110; 138; 166 ] }
+  | V_40 -> { count = 46; indices = [ 6; 30; 58; 86; 114; 142; 170 ] }
