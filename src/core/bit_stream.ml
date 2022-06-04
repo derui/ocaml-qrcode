@@ -6,21 +6,14 @@ type t = {
   buffer : Stdint.Uint128.t array;
 }
 
-type bit =
-  [ `One
-  | `Zero
-  ]
-
-let show_bit = function `Zero -> "0" | `One -> "1"
-
-let pp_bit fmt t = Format.fprintf fmt "%s" @@ show_bit t
+type bit = Type.Bit.t
 
 type bit_result =
   | Continue of bit
   | Eos
 
 let pp_bit_result fmt = function
-  | Continue bit -> Format.fprintf fmt "Continue %s" @@ show_bit bit
+  | Continue bit -> Format.fprintf fmt "Continue %s" @@ Type.Bit.show bit
   | Eos -> Format.fprintf fmt "Eos"
 
 let create () = { current_bits = 0; bits = 0; buffer = Array.make 1 Stdint.Uint128.zero }

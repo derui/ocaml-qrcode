@@ -2,7 +2,7 @@ type row = int
 
 type col = int
 
-type t = Bit_stream.bit array array
+type t = Type.Bit.t array array
 (** type of matrix *)
 
 module Position_set = Set.Make (struct
@@ -12,7 +12,7 @@ module Position_set = Set.Make (struct
 end)
 
 module Support = struct
-  let put_bit ~set_ref ~matrix ~pos ~(bit : Bit_stream.bit) =
+  let put_bit ~set_ref ~matrix ~pos ~bit =
     if Position_set.mem pos !set_ref then ()
     else
       let row, col = pos in
@@ -336,7 +336,7 @@ module Writer = struct
   let make_matrix ~metadata ~blocks =
     let capacity = Version.to_capacity metadata.Metadata.version in
     let edge = capacity.module_per_edge in
-    let matrix : Bit_stream.bit array array = Array.make_matrix edge edge `Zero in
+    let matrix : Type.Bit.t array array = Array.make_matrix edge edge `Zero in
     let matrix, written_positions =
       fill_finder_patterns ~metadata matrix |> fill_timing_patterns ~metadata |> fill_separators ~metadata
       |> fill_alignment_patterns ~metadata |> fill_version_informations ~metadata |> fill_format_informations ~metadata
