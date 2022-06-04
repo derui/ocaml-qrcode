@@ -5,7 +5,7 @@ module Blocks = struct
     block_data : Stdint.Uint8.t array;
   }
 
-  type t = { blocks : block list }
+  type t = block array
 
   let count_loop count f =
     let rec loop accum current = if count <= current then List.rev accum else loop (f () :: accum) (succ current) in
@@ -581,14 +581,14 @@ module Blocks = struct
           let block2 = count_loop 61 @@ split_internal ~data_word_size:16 ~total_word_size:46 stream in
           block1 @ block2
     in
-    { blocks }
+    Array.of_list blocks
 end
 
 type ec_block = Rs_symbol.t array
 
 type t = {
   blocks : Blocks.t;
-  ec_blocks : ec_block list;
+  ec_blocks : ec_block array;
 }
 
 (** [calculate_ec block] calculate *)
@@ -625,5 +625,5 @@ let calculate_ec ~metadata code_word =
 
     register
   in
-  let ec_blocks = List.map circuit blocks.Blocks.blocks in
+  let ec_blocks = Array.map circuit blocks in
   { blocks; ec_blocks }
