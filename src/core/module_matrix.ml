@@ -2,14 +2,19 @@ type row = int
 
 type col = int
 
-type t = Type.Bit.t array array
-(** type of matrix *)
+type position = row * col
 
 module Position_set = Set.Make (struct
-  type t = row * col
+  type t = position
 
   let compare = Stdlib.compare
 end)
+
+type t = {
+  matrix : Type.Bit.t array array;
+  function_patterns : Position_set.t;
+}
+(** type of matrix *)
 
 module Support = struct
   let put_bit ~set_ref ~matrix ~pos ~bit =
@@ -343,5 +348,5 @@ module Writer = struct
     in
     let data_module_positions = collect_data_position_sequence ~metadata ~filled_set:written_positions in
     write_blocks ~blocks ~matrix ~module_positions:data_module_positions;
-    matrix
+    { matrix; function_patterns = written_positions }
 end
