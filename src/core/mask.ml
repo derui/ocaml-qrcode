@@ -42,7 +42,6 @@ module Conceded_score = struct
   module M = Module_matrix
 
   let for_adjacent matrix =
-    let { M.matrix; _ } = matrix in
     let rec adjacent_row row accum =
       if row >= Array.length matrix then accum
       else
@@ -88,7 +87,6 @@ module Conceded_score = struct
     row_score + col_score
 
   let for_module_block matrix =
-    let { M.matrix; _ } = matrix in
     let size = Array.length matrix in
     let score = 3 in
     let rec calculate_block row col accum =
@@ -107,7 +105,6 @@ module Conceded_score = struct
     calculate_block 0 0 0
 
   let for_indicator_pattern matrix =
-    let { M.matrix; _ } = matrix in
     let size = Array.length matrix in
 
     let rec check_blight_patterns pos move_fun check_border repeated_count =
@@ -192,10 +189,36 @@ module Conceded_score = struct
     in
     let exists_invalid_pattern = start_positions |> List.exists (fun (start, dir, f) -> f start dir) in
     if exists_invalid_pattern then 40 else 0
+
+  let for_dark_pattern_rate matrix =
+    let total_size = Array.length matrix * 2 in
+
+    let count = ref 0 in
+    Array.iter (fun ary -> Array.iter (function `One -> incr count | `Zero -> ()) ary) matrix;
+
+    let total_size = float_of_int total_size and count = float_of_int !count in
+    let dark_module_rate = count /. total_size in
+    let diff = abs_float (dark_module_rate -. 0.5) *. 10. /. 5. in
+    int_of_float (diff *. 10.)
 end
 
+let apply_mask matrix t =
+  let module M = Module_matrix in
+  let { M.matrix = mat; _ } = matrix in
+  Array.mapi
+    (fun row ary ->
+      Array.mapi
+        (fun col bit -> if M.is_function_pattern matrix ~row ~col then bit else Type.Bit.xor bit t.(row).(col))
+        ary)
+    mat
+
 let calculate_conceded ~matrix t =
-  let conceded_of_adjacent = Conceded_score.for_adjacent matrix
-  and conceded_of_module_block = Conceded_score.for_module_block matrix
-  and conceded_of_indicator_pattern = Conceded_score.for_indicator_pattern matrix in
-  ()
+  let matrix' = apply_mask matrix t in
+  let conceded_of_adjacent = Conceded_score.for_adjacent matrix'
+  and conceded_of_module_block = Conceded_score.for_module_block matrix'
+  and conceded_of_indicator_pattern = Conceded_score.for_indicator_pattern matrix'
+  and conceded_of_dark_pattern_rate = Conceded_score.for_dark_pattern_rate matrix' in
+  let score =
+    conceded_of_adjacent + conceded_of_module_block + conceded_of_indicator_pattern + conceded_of_dark_pattern_rate
+  in
+  (matrix', score)
