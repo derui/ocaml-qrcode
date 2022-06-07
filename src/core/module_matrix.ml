@@ -350,3 +350,5 @@ module Writer = struct
     write_blocks ~blocks ~matrix ~module_positions:data_module_positions;
     { matrix; function_patterns = written_positions }
 end
+
+let is_function_pattern { function_patterns; _ } ~row ~col = Position_set.mem (row, col) function_patterns
