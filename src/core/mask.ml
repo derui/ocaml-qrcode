@@ -8,19 +8,17 @@ type t =
   | T_7
   | T_8
 
-type mask = Type.Bit.t array array
-
 let to_reference = function
-  | T_1 -> 0b000
-  | T_2 -> 0b001
-  | T_3 -> 0b010
-  | T_4 -> 0b011
-  | T_5 -> 0b100
-  | T_6 -> 0b101
-  | T_7 -> 0b110
-  | T_8 -> 0b111
+  | T_1 -> [ `Zero; `Zero; `Zero ]
+  | T_2 -> [ `Zero; `Zero; `One ]
+  | T_3 -> [ `Zero; `One; `Zero ]
+  | T_4 -> [ `Zero; `One; `One ]
+  | T_5 -> [ `One; `Zero; `Zero ]
+  | T_6 -> [ `One; `Zero; `One ]
+  | T_7 -> [ `One; `One; `Zero ]
+  | T_8 -> [ `One; `One; `One ]
 
-let to_mask ~version t =
+let to_mask_pattern ~version t =
   let predicate =
     match t with
     | T_1 -> fun row col -> (row + col) mod 2 = 0
@@ -36,7 +34,7 @@ let to_mask ~version t =
     let capacity = Version.to_capacity version in
     capacity.module_per_edge
   in
-  Array.make_matrix edge edge (fun row col -> if predicate row col then `One else `Zero)
+  Array.init edge (fun row -> Array.init edge (fun col -> if predicate row col then `One else `Zero))
 
 module Conceded_score = struct
   module M = Module_matrix
@@ -222,3 +220,17 @@ let calculate_conceded ~matrix t =
     conceded_of_adjacent + conceded_of_module_block + conceded_of_indicator_pattern + conceded_of_dark_pattern_rate
   in
   (matrix', score)
+
+let choice_applyable_mask ~version ~matrix =
+  let masks = [ T_2; T_3; T_4; T_5; T_6; T_7; T_8 ] in
+  let mask_pattern = to_mask_pattern ~version T_1 in
+  let masked, score = calculate_conceded ~matrix mask_pattern in
+  let masked, _, mask =
+    List.fold_left
+      (fun (masked, champion_score, mask) mask' ->
+        let mask_pattern = to_mask_pattern ~version mask' in
+        let masked', score = calculate_conceded ~matrix mask_pattern in
+        if champion_score <= score then (masked, champion_score, mask) else (masked', score, mask'))
+      (masked, score, T_1) masks
+  in
+  (masked, mask)
