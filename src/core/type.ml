@@ -12,5 +12,5 @@ module Bit = struct
 
   let ( + ) = xor
 
-  let ( * ) a b = match (a, b) with `Zero, `Zero | `One, `Zero | `Zero, `One -> `Zero | `One, `One -> `Zero
+  let ( * ) a b = match (a, b) with `Zero, `Zero | `One, `Zero | `Zero, `One -> `Zero | `One, `One -> `One
 end

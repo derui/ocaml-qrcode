@@ -4,7 +4,7 @@ module M = Metadata
 let reminder_bit_count_test () =
   let module S = Support in
   let for_v version =
-    M.make ~version ~mode:Mode.Byte ~error_correction_level:Error_correction.Low
+    M.make ~version ~mode:Mode.Byte ~error_correction_level:Error_correction_level.Low
     |> M.reminder_bit_count |> Stdint.Uint8.to_int
   in
   let open Version in
@@ -52,7 +52,7 @@ let reminder_bit_count_test () =
 let need_version_info_test () =
   let module S = Support in
   let for_v version =
-    M.make ~version ~mode:Mode.Byte ~error_correction_level:Error_correction.Low |> M.need_version_information
+    M.make ~version ~mode:Mode.Byte ~error_correction_level:Error_correction_level.Low |> M.need_version_information
   in
   Alcotest.(check' bool) ~msg:"Not need on V1" ~actual:(for_v Version.V_1) ~expected:false;
   Alcotest.(check' bool) ~msg:"Not need on V2" ~actual:(for_v Version.V_2) ~expected:false;
