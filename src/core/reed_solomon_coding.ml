@@ -606,9 +606,10 @@ let calculate_ec ~metadata code_word =
       | None -> raise (Invalid_argument (Printf.sprintf "Invalid polynomial number: %d" k))
       | Some v -> v
     in
+    let greater_index = k - 1 in
+    let prev = ref U.zero in
 
     let put_datum datum =
-      let greater_index = k - 1 in
       let datum =
         let open U in
         datum + register.(greater_index)
@@ -616,12 +617,14 @@ let calculate_ec ~metadata code_word =
       Array.iteri
         (fun idx _ ->
           let coefficient = data_polynomial.(idx) in
-          let previous_data = if idx = 0 then U.zero else register.(pred idx) in
+          let previous_data = if idx = 0 then U.zero else !prev in
           let open U in
+          prev := register.(idx);
           register.(idx) <- (datum * coefficient) + previous_data)
         register
     in
     Array.iter put_datum data;
+    Array.iter put_datum @@ Array.make k U.zero;
 
     register
   in
