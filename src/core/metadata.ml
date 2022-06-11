@@ -1,7 +1,7 @@
 type t = {
   version : Version.t;
   mode : Mode.t;
-  error_correction_level : Error_correction.level;
+  error_correction_level : Error_correction_level.t;
   total_size : Stdint.Uint32.t;
   word_size : Stdint.Uint32.t;
   bit_size : Stdint.Uint32.t;
@@ -10,7 +10,7 @@ type t = {
 
 let to_word_size ~version ~error_correction_level =
   let open Version in
-  let module E = Error_correction in
+  let module E = Error_correction_level in
   match (version, error_correction_level) with
   | V_1, E.Low -> 19
   | V_1, Medium -> 16

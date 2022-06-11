@@ -32,7 +32,7 @@ module Blocks = struct
 
   let split ~metadata stream =
     let open Version in
-    let module E = Error_correction in
+    let module E = Error_correction_level in
     let stream = Bit_stream.clone stream in
     let blocks =
       match (metadata.Metadata.version, metadata.error_correction_level) with
