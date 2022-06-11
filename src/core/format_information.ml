@@ -15,7 +15,6 @@ let encode { error_correction_level; mask_pattern } =
   let indicator = Error_correction_level.to_indicator error_correction_level
   and pattern = Mask.to_reference mask_pattern in
   let bits = indicator @ pattern in
-  Printf.printf "%d\n" @@ List.length mask;
 
   let circuit bits =
     let k = 10 in
