@@ -14,3 +14,13 @@ module Bit = struct
 
   let ( * ) a b = match (a, b) with `Zero, `Zero | `One, `Zero | `Zero, `One -> `Zero | `One, `One -> `One
 end
+
+type matrix = Bit.t array array
+
+type position = int * int
+
+module Position_set = Set.Make (struct
+  type t = position
+
+  let compare = Stdlib.compare
+end)
