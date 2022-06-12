@@ -278,3 +278,31 @@ let to_position_set t =
   set := List.map snd t.timing_pattern_positions.top_to_bottom |> List.to_seq |> Fun.swap Position_set.add_seq !set;
 
   !set
+
+module Writer = struct
+  let fill_finder_patterns ~matrix t =
+    t.finder_pattern_positions.bottom_left |> List.iter (fun (bit, (row, col)) -> matrix.(row).(col) <- bit);
+    t.finder_pattern_positions.top_left |> List.iter (fun (bit, (row, col)) -> matrix.(row).(col) <- bit);
+    t.finder_pattern_positions.top_right |> List.iter (fun (bit, (row, col)) -> matrix.(row).(col) <- bit)
+
+  let fill_separators ~matrix t =
+    t.separator_pattern_positions.positions |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero)
+
+  let fill_timing_patterns ~matrix t =
+    t.timing_pattern_positions.left_to_right |> List.iter (fun (bit, (row, col)) -> matrix.(row).(col) <- bit);
+    t.timing_pattern_positions.top_to_bottom |> List.iter (fun (bit, (row, col)) -> matrix.(row).(col) <- bit)
+
+  let fill_alignment_patterns ~matrix t =
+    t.alignment_pattern_positions.patterns |> List.concat
+    |> List.iter (fun (bit, (row, col)) -> matrix.(row).(col) <- bit)
+
+  let fill_version_informations ~matrix t =
+    match t.version_information_positions with
+    | None -> ()
+    | Some version ->
+        version.top_right |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero);
+        version.bottom_left |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero)
+
+  let fill_format_informations ~matrix t =
+    t.format_information_positions.top_and_bottom |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero)
+end
