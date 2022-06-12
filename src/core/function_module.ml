@@ -251,4 +251,30 @@ let make metadata =
     modules_per_edge = capacity.module_per_edge;
   }
 
-let to_position_set t = ()
+let to_position_set t =
+  let open Std in
+  let set = ref Position_set.empty in
+  (* finder pattern *)
+  set := List.map snd t.finder_pattern_positions.top_left |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  set := List.map snd t.finder_pattern_positions.top_right |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  set := List.map snd t.finder_pattern_positions.bottom_left |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  (* format information *)
+  set := t.format_information_positions.top_and_bottom |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  set := t.format_information_positions.top_left |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  (* version information *)
+  (match t.version_information_positions with
+  | None -> ()
+  | Some version ->
+      set := version.top_right |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+      set := version.bottom_left |> List.to_seq |> Fun.swap Position_set.add_seq !set);
+  (* alignment pattern *)
+  set :=
+    t.alignment_pattern_positions.patterns |> List.concat |> List.map snd |> List.to_seq
+    |> Fun.swap Position_set.add_seq !set;
+  (* separator *)
+  set := t.separator_pattern_positions.positions |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  (* timing pattern *)
+  set := List.map snd t.timing_pattern_positions.left_to_right |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  set := List.map snd t.timing_pattern_positions.top_to_bottom |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+
+  !set
