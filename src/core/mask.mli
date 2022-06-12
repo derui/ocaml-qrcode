@@ -11,5 +11,6 @@ type t =
 val to_reference : t -> Type.Bit.t list
 (** [to_reference mask] get a reference bit *)
 
-val choice_applyable_mask : version:Version.t -> matrix:Module_matrix.t -> Type.Bit.t array array * t
-(** [choice_applyable_mask ~version ~matrix] get a mask and masked matrix that is lowest conceded score *)
+val choice_applyable_mask :
+  version:Version.t -> function_module:Function_module.t -> matrix:Type.matrix -> Type.matrix * t
+(** [choice_applyable_mask ~version ~matrix ~function_module] get a mask and masked matrix that is lowest conceded score *)

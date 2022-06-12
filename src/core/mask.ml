@@ -37,8 +37,6 @@ let to_mask_pattern ~version t =
   Array.init edge (fun row -> Array.init edge (fun col -> if predicate row col then `One else `Zero))
 
 module Conceded_score = struct
-  module M = Module_matrix
-
   let for_adjacent matrix =
     let rec adjacent_row row accum =
       if row >= Array.length matrix then accum
@@ -200,18 +198,16 @@ module Conceded_score = struct
     int_of_float (diff *. 10.)
 end
 
-let apply_mask matrix t =
-  let module M = Module_matrix in
-  let { M.matrix = mat; _ } = matrix in
+let apply_mask ~function_pattern matrix t =
+  let module P = Type.Position_set in
   Array.mapi
     (fun row ary ->
-      Array.mapi
-        (fun col bit -> if M.is_function_pattern matrix ~row ~col then bit else Type.Bit.xor bit t.(row).(col))
-        ary)
-    mat
+      Array.mapi (fun col bit -> if P.mem (row, col) function_pattern then bit else Type.Bit.xor bit t.(row).(col)) ary)
+    matrix
 
-let calculate_conceded ~matrix t =
-  let matrix' = apply_mask matrix t in
+let calculate_conceded ~matrix ~function_module t =
+  let function_pattern = Function_module.to_position_set function_module in
+  let matrix' = apply_mask ~function_pattern matrix t in
   let conceded_of_adjacent = Conceded_score.for_adjacent matrix'
   and conceded_of_module_block = Conceded_score.for_module_block matrix'
   and conceded_of_indicator_pattern = Conceded_score.for_indicator_pattern matrix'
@@ -221,15 +217,15 @@ let calculate_conceded ~matrix t =
   in
   (matrix', score)
 
-let choice_applyable_mask ~version ~matrix =
+let choice_applyable_mask ~version ~function_module ~matrix =
   let masks = [ T_2; T_3; T_4; T_5; T_6; T_7; T_8 ] in
   let mask_pattern = to_mask_pattern ~version T_1 in
-  let masked, score = calculate_conceded ~matrix mask_pattern in
+  let masked, score = calculate_conceded ~function_module ~matrix mask_pattern in
   let masked, _, mask =
     List.fold_left
       (fun (masked, champion_score, mask) mask' ->
         let mask_pattern = to_mask_pattern ~version mask' in
-        let masked', score = calculate_conceded ~matrix mask_pattern in
+        let masked', score = calculate_conceded ~function_module ~matrix mask_pattern in
         if champion_score <= score then (masked, champion_score, mask) else (masked', score, mask'))
       (masked, score, T_1) masks
   in

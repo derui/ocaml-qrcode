@@ -21,3 +21,7 @@ module Array = struct
     in
     loop' from
 end
+
+module Fun = struct
+  let swap f a b = f b a
+end
