@@ -10,5 +10,6 @@ let () =
       ("RS coding polynomial", Rs_polynomial_test.tests);
       ("Metadata", Metadata_test.tests);
       ("Format information", Format_information_test.tests);
+      ("Version information", Version_information_test.tests);
       ("Type", Type_test.tests);
     ]
