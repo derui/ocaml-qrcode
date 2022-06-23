@@ -1,0 +1,5 @@
+(library
+ (name ocaml_qrcode_encoder)
+ (public_name ocaml-qrcode.encoder)
+ (flags (:standard -safe-string))
+ (libraries stdint ocaml-qrcode.core camlimages))

@@ -18,6 +18,7 @@ depends: [
   "ppx_deriving" { < "5.3.0"}
   "stdint" { < "0.8.0"}
   "uutf" {= "1.0.2"}
+  "camlimages" { < "6.0.0"}
 ]
 available: ["ocaml" >= "4.09.0"]
 description: """
