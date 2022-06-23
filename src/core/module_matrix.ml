@@ -132,4 +132,16 @@ module Writer = struct
     List.iter2 (fun (row, col) bit -> matrix.(row).(col) <- bit) other_positions bits;
 
     { t with matrix }
+
+  let write_version_information ~metadata t =
+    let positions = t.function_module.version_information_positions in
+    match (Version_information.encode metadata.Metadata.version, positions) with
+    | None, _ | _, None -> t
+    | Some stream, Some positions ->
+        let bits = stream |> Bit_stream.to_list in
+        let matrix = Array.copy (Array.map Array.copy t.matrix) in
+        List.iter2 (fun (row, col) bit -> matrix.(row).(col) <- bit) positions.bottom_left bits;
+        List.iter2 (fun (row, col) bit -> matrix.(row).(col) <- bit) positions.top_right bits;
+
+        { t with matrix }
 end
