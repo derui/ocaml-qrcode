@@ -129,6 +129,7 @@ module Writer = struct
     let other_positions = List.filter (fun (row, col) -> not (row = edge - 7 && col = 8)) positions.top_and_bottom in
     matrix.(edge - 7).(8) <- `One;
 
+    Printf.printf "size %d == %d\n" (List.length other_positions) (List.length bits);
     List.iter2 (fun (row, col) bit -> matrix.(row).(col) <- bit) other_positions bits;
 
     { t with matrix }

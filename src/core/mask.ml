@@ -86,9 +86,9 @@ module Conceded_score = struct
     let size = Array.length matrix in
     let score = 3 in
     let rec calculate_block row col accum =
-      if row >= size && col >= size then accum
-      else if col >= size then calculate_block (succ row) 0 accum
-      else if row >= size then calculate_block 0 (succ col) accum
+      if row >= size - 1 && col >= size - 1 then accum
+      else if col >= size - 1 then calculate_block (succ row) 0 accum
+      else if row >= size - 1 then calculate_block 0 (succ col) accum
       else
         let v1 = matrix.(row).(col)
         and v2 = matrix.(row + 1).(col)

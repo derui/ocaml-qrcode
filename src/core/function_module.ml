@@ -73,14 +73,16 @@ let get_format_information_positions metadata =
   and top_and_bottom =
     [
       (* top-right *)
+      (8, edge - 8);
       (8, edge - 7);
       (8, edge - 6);
+      (8, edge - 5);
       (8, edge - 4);
       (8, edge - 3);
       (8, edge - 2);
       (8, edge - 1);
-      (8, edge);
       (* bottom-left *)
+      (edge - 8, 8);
       (edge - 7, 8);
       (edge - 6, 8);
       (edge - 5, 8);
@@ -88,7 +90,6 @@ let get_format_information_positions metadata =
       (edge - 3, 8);
       (edge - 2, 8);
       (edge - 1, 8);
-      (edge, 8);
     ]
   in
   { top_left; top_and_bottom }

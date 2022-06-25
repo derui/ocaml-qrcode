@@ -1,0 +1,5 @@
+(executable
+ (name main)
+ (public_name ocaml-qrcode)
+ (flags (:standard -safe-string))
+ (libraries ocaml-qrcode.core ocaml-qrcode.encoder))
