@@ -626,7 +626,7 @@ let calculate_ec ~metadata code_word =
     Array.iter put_datum data;
     Array.iter put_datum @@ Array.make k U.zero;
 
-    register
+    register |> Array.to_list |> List.rev |> Array.of_list
   in
   let ec_blocks = Array.map circuit blocks in
   { blocks; ec_blocks }

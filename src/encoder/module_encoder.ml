@@ -23,11 +23,13 @@ let encode_to_index8 ~matrix ~options =
           let use_module = match value with `One -> dark_module | `Zero -> light_module in
 
           let y = rowidx * module_pixel and x = colidx * module_pixel in
-          Printf.printf "(%d, %d) -> (%s)\n" rowidx colidx (Type.Bit.show value);
-          Printf.printf "at image (%d, %d) -> (%s)\n" y x (Type.Bit.show value);
 
           Rgb24.blit use_module 0 0 image x y module_pixel module_pixel)
         row)
     matrix.matrix;
 
-  Images.Rgb24 image
+  let size_with_quiet_zone = size + (4 * module_pixel * 2) in
+  let image_with_quiet = Rgb24.make size_with_quiet_zone size_with_quiet_zone Constants.light_color in
+  Rgb24.blit image 0 0 image_with_quiet (4 * module_pixel) (4 * module_pixel) size size;
+
+  Images.Rgb24 image_with_quiet

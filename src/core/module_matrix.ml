@@ -22,15 +22,19 @@ module Writer = struct
     let next_row_by_dir row = function `Up -> pred row | `Down -> succ row
     and reach_end_by_dir row = function `Up -> row < 0 | `Down -> row >= edge
     and flip_dir = function `Up -> (`Down, 0) | `Down -> (`Up, edge - 1) in
+    let timing_pattern_column = 6 in
 
     let rec loop dir row base_col queue =
       if base_col <= 0 then queue
       else if reach_end_by_dir row dir then
         let dir, row = flip_dir dir in
         loop dir row (base_col - 2) queue
+      else if base_col = timing_pattern_column then
+        (* force skip timing pattern column *)
+        loop dir row (base_col - 1) queue
       else
-        let right_pos = Position_set.mem (row, base_col) written_positions
-        and left_pos = Position_set.mem (row, base_col - 1) written_positions in
+        let right_pos = not @@ Position_set.mem (row, base_col) written_positions
+        and left_pos = not @@ Position_set.mem (row, base_col - 1) written_positions in
         if right_pos then Queue.add (row, base_col) queue else ();
         if left_pos then Queue.add (row, base_col - 1) queue else ();
         loop dir (next_row_by_dir row dir) base_col queue
@@ -120,7 +124,7 @@ module Writer = struct
 
   let write_format_information ~format_information ~metadata t =
     let capacity = Version.to_capacity metadata.Metadata.version in
-    let edge = capacity.module_per_edge in
+    let edge = capacity.module_per_edge - 1 in
     let bits = Format_information.encode format_information |> Bit_stream.to_list in
     let matrix = Array.copy (Array.map Array.copy t.matrix) in
     let positions = t.function_module.format_information_positions in
@@ -129,7 +133,6 @@ module Writer = struct
     let other_positions = List.filter (fun (row, col) -> not (row = edge - 7 && col = 8)) positions.top_and_bottom in
     matrix.(edge - 7).(8) <- `One;
 
-    Printf.printf "size %d == %d\n" (List.length other_positions) (List.length bits);
     List.iter2 (fun (row, col) bit -> matrix.(row).(col) <- bit) other_positions bits;
 
     { t with matrix }

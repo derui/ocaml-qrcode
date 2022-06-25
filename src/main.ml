@@ -26,9 +26,9 @@ let () =
   let format_information =
     C.Format_information.make ~error_correction_level:metadata.error_correction_level ~mask_pattern:mask
   in
-  let matrix = C.Module_matrix.{ matrix with matrix = matrix_data } in
+  (* let matrix = C.Module_matrix.{ matrix with matrix = matrix_data } in *)
   let matrix = C.Module_matrix.Writer.write_format_information ~format_information ~metadata matrix in
   let matrix = C.Module_matrix.Writer.write_version_information ~metadata matrix in
 
   (* write png *)
-  E.Png_encoder.encode ~path:"/tmp/code.png" ~matrix ~options:{ pixel_per_module = 4 }
+  E.Png_encoder.encode ~path:"/tmp/code.png" ~matrix ~options:{ pixel_per_module = 8 }

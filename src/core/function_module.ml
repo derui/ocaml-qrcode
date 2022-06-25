@@ -72,8 +72,16 @@ let get_format_information_positions metadata =
     ]
   and top_and_bottom =
     [
+      (* bottom-left *)
+      (edge, 8);
+      (edge - 1, 8);
+      (edge - 2, 8);
+      (edge - 3, 8);
+      (edge - 4, 8);
+      (edge - 5, 8);
+      (edge - 6, 8);
+      (edge - 7, 8);
       (* top-right *)
-      (8, edge - 8);
       (8, edge - 7);
       (8, edge - 6);
       (8, edge - 5);
@@ -81,15 +89,7 @@ let get_format_information_positions metadata =
       (8, edge - 3);
       (8, edge - 2);
       (8, edge - 1);
-      (* bottom-left *)
-      (edge - 8, 8);
-      (edge - 7, 8);
-      (edge - 6, 8);
-      (edge - 5, 8);
-      (edge - 4, 8);
-      (edge - 3, 8);
-      (edge - 2, 8);
-      (edge - 1, 8);
+      (8, edge);
     ]
   in
   { top_left; top_and_bottom }
@@ -211,15 +211,16 @@ let get_alignment_pattern_positions metadata =
 let get_separator_pattern_positions metadata =
   let capacity = Version.to_capacity metadata.Metadata.version in
   let separator_size = 8 in
+  let edge = capacity.module_per_edge - 1 in
   let top_left =
     List.init separator_size (fun v -> (separator_size - 1, v))
     @ List.init separator_size (fun v -> (v, separator_size - 1))
   and top_right =
-    List.init separator_size (fun v -> (v, capacity.module_per_edge - 9))
-    @ List.init separator_size (fun v -> (separator_size - 1, capacity.module_per_edge - 9 + v))
+    List.init separator_size (fun v -> (v, edge - 7))
+    @ List.init separator_size (fun v -> (separator_size - 1, edge - 7 + v))
   and bottom_left =
-    List.init separator_size (fun v -> (capacity.module_per_edge - 9, v))
-    @ List.init separator_size (fun v -> (capacity.module_per_edge - 9 + v, separator_size - 1))
+    List.init separator_size (fun v -> (edge - 7, v))
+    @ List.init separator_size (fun v -> (edge - 7 + v, separator_size - 1))
   in
   { positions = List.concat [ top_left; top_right; bottom_left ] }
 
@@ -259,15 +260,6 @@ let to_position_set t =
   set := List.map snd t.finder_pattern_positions.top_left |> List.to_seq |> Fun.swap Position_set.add_seq !set;
   set := List.map snd t.finder_pattern_positions.top_right |> List.to_seq |> Fun.swap Position_set.add_seq !set;
   set := List.map snd t.finder_pattern_positions.bottom_left |> List.to_seq |> Fun.swap Position_set.add_seq !set;
-  (* format information *)
-  set := t.format_information_positions.top_and_bottom |> List.to_seq |> Fun.swap Position_set.add_seq !set;
-  set := t.format_information_positions.top_left |> List.to_seq |> Fun.swap Position_set.add_seq !set;
-  (* version information *)
-  (match t.version_information_positions with
-  | None -> ()
-  | Some version ->
-      set := version.top_right |> List.to_seq |> Fun.swap Position_set.add_seq !set;
-      set := version.bottom_left |> List.to_seq |> Fun.swap Position_set.add_seq !set);
   (* alignment pattern *)
   set :=
     t.alignment_pattern_positions.patterns |> List.concat |> List.map snd |> List.to_seq
@@ -277,6 +269,15 @@ let to_position_set t =
   (* timing pattern *)
   set := List.map snd t.timing_pattern_positions.left_to_right |> List.to_seq |> Fun.swap Position_set.add_seq !set;
   set := List.map snd t.timing_pattern_positions.top_to_bottom |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  (* format information *)
+  set := t.format_information_positions.top_and_bottom |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  set := t.format_information_positions.top_left |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+  (* version information *)
+  (match t.version_information_positions with
+  | None -> ()
+  | Some version ->
+      set := version.top_right |> List.to_seq |> Fun.swap Position_set.add_seq !set;
+      set := version.bottom_left |> List.to_seq |> Fun.swap Position_set.add_seq !set);
 
   !set
 
@@ -305,5 +306,6 @@ module Writer = struct
         version.bottom_left |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero)
 
   let fill_format_informations ~matrix t =
-    t.format_information_positions.top_and_bottom |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero)
+    t.format_information_positions.top_and_bottom |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero);
+    t.format_information_positions.top_left |> List.iter (fun (row, col) -> matrix.(row).(col) <- `Zero)
 end
