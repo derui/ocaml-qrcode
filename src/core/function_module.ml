@@ -168,12 +168,12 @@ let get_finder_pattern metadata =
   in
   let top_right =
     List.init (Array.length finder_pattern) (fun row ->
-        List.init (Array.length finder_pattern) (fun col -> (finder_pattern.(row).(col), (row, col + edge - 8))))
+        List.init (Array.length finder_pattern) (fun col -> (finder_pattern.(row).(col), (row, col + edge - 7))))
     |> List.concat
   in
   let bottom_left =
     List.init (Array.length finder_pattern) (fun row ->
-        List.init (Array.length finder_pattern) (fun col -> (finder_pattern.(row).(col), (row + edge - 8, col))))
+        List.init (Array.length finder_pattern) (fun col -> (finder_pattern.(row).(col), (row + edge - 7, col))))
     |> List.concat
   in
 
