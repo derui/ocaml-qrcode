@@ -12,4 +12,5 @@ let () =
       ("Format information", Format_information_test.tests);
       ("Version information", Version_information_test.tests);
       ("Type", Type_test.tests);
+      ("Reed-Solomon Code", Reed_solomon_coding_test.tests);
     ]
