@@ -1078,7 +1078,9 @@ let polynomials =
          163;
          238;
        |];
-  tbl
+  Hashtbl.to_seq tbl
+  |> Seq.map (fun (key, ary) -> (key, Array.to_list ary |> List.rev |> Array.of_list))
+  |> Hashtbl.of_seq
 
 let to_validated v = Hashtbl.find_opt polynomials v |> Option.map (fun _ -> v)
 

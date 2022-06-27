@@ -18,7 +18,7 @@ let make_reed_solomon_code_test () =
   let code_word = CW.make ~segments:[ encoded ] ~metadata in
   let rs = RS.calculate_ec ~metadata code_word in
   let actual = rs.ec_blocks.(0) in
-  let expected = [| 67; 175; 134; 187; 90; 13; 150 |] |> Array.map Stdint.Uint8.of_int in
+  let expected = [ 67; 175; 134; 187; 90; 13; 150 ] |> List.rev |> Array.of_list |> Array.map Stdint.Uint8.of_int in
 
   Alcotest.(check' code_word_testable) ~msg:"codeword" ~expected ~actual
 

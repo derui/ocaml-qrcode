@@ -610,10 +610,7 @@ let calculate_ec ~metadata code_word =
     let prev = ref U.zero in
 
     let put_datum datum =
-      let datum =
-        let open U in
-        datum + register.(greater_index)
-      in
+      let datum = U.(logxor datum register.(greater_index)) in
       Array.iteri
         (fun idx _ ->
           let coefficient = data_polynomial.(idx) in
