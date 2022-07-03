@@ -96,7 +96,7 @@ let to_byte_list t =
     else
       match next stream with
       | Eos -> Stdint.Uint8.of_int accum
-      | Continue `One -> read_byte (succ count) ((accum lsl 1) lor 1) stream
+      | Continue `One -> read_byte (succ count) ((accum lsl 1) + 1) stream
       | Continue `Zero -> read_byte (succ count) (accum lsl 1) stream
   in
   let rec read_bytes count accum stream =

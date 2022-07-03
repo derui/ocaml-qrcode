@@ -13,21 +13,10 @@ module Blocks = struct
 
   let split_internal ~data_word_size ~total_word_size stream () =
     let module UI = Stdint.Uint8 in
-    let bit_size = data_word_size * 8 in
-    let rec loop accum count =
-      if count >= bit_size then accum
-      else
-        match Bit_stream.next stream with
-        | Eos -> failwith "Invalid bit stream"
-        | Continue `One ->
-            let v = accum.(count / 8) in
-            let bit = UI.shift_left UI.one (7 - (count mod 8)) in
-            accum.(count / 8) <- UI.(logor v bit);
-            loop accum (succ count)
-        | Continue `Zero -> loop accum (succ count)
-    in
-    let buf = Array.make data_word_size UI.zero in
-    let data = loop buf 0 in
+    let stream = Bit_stream.clone stream in
+
+    let data = Bit_stream.to_byte_list stream |> Array.of_list in
+    let data = Array.sub data 0 data_word_size in
     { total_word_size = UI.of_int total_word_size; data_word_size = UI.of_int data_word_size; block_data = data }
 
   let split ~metadata stream =
@@ -610,18 +599,17 @@ let calculate_ec ~metadata code_word =
     let prev = ref U.zero in
 
     let put_datum datum =
-      let datum = U.(logxor datum register.(greater_index)) in
+      let module GF = Type.GF256 in
+      let datum = GF.(datum + register.(greater_index)) in
       Array.iteri
-        (fun idx _ ->
+        (fun idx v ->
           let coefficient = data_polynomial.(idx) in
           let previous_data = if idx = 0 then U.zero else !prev in
-          let open U in
-          prev := register.(idx);
-          register.(idx) <- (datum * coefficient) + previous_data)
+          prev := v;
+          register.(idx) <- GF.((datum * coefficient) + previous_data))
         register
     in
     Array.iter put_datum data;
-    Array.iter put_datum @@ Array.make k U.zero;
 
     register |> Array.to_list |> List.rev |> Array.of_list
   in

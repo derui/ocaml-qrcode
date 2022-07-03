@@ -15,6 +15,7 @@ let encode' ~metadata ~generator ~list_to_number_data =
             |> List.fold_left (fun stream bit -> Bit_stream.put ~bit stream) stream)
           stream number_list
       in
+
       Ok (S.make ~mode:metadata.Metadata.mode ~version:metadata.version ~data:stream ~size:(List.length data))
 
 module Number : S.S = struct

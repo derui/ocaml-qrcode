@@ -3,18 +3,24 @@ module E = Ocaml_qrcode_encoder
 
 let () =
   let base_data = read_line () in
-  let data = base_data |> String.to_seq |> Seq.map Char.code |> Seq.map Stdint.Uint8.of_int in
+  let data = base_data |> String.to_seq in
   let metadata =
     C.Metadata.make ~version:C.Version.V_1 ~mode:C.Mode.Number ~error_correction_level:C.Error_correction_level.Low
   in
   let function_module = C.Function_module.make metadata in
 
   (* make segment from data *)
-  let bit_stream = C.Bit_stream.create () in
-  let bit_stream = Seq.fold_left (fun bs byte -> C.Bit_stream.put_byte ~data:byte bs) bit_stream data in
-  let segment =
-    C.Segment.make ~mode:metadata.mode ~version:metadata.version ~data:bit_stream ~size:(String.length base_data)
+  let generator data =
+    let seq = ref data in
+    fun () ->
+      match Seq.uncons !seq with
+      | None -> None
+      | Some (v, seq') ->
+          seq := seq';
+          Some v
   in
+
+  let segment = C.Segment_encoders.Number.encode ~metadata ~generator:(generator data) |> Result.get_ok in
 
   (* make error correction blocks *)
   let code_words = C.Code_word.make ~segments:[ segment ] ~metadata in

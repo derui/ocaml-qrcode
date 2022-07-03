@@ -34,8 +34,19 @@ let make_full_data_test () =
 
   Alcotest.(check' code_word_testable) ~msg:"codeword" ~expected ~actual:code_word.CW.words
 
+let make_number_test () =
+  let module Encoder = Ocaml_qrcode_core.Segment_encoders.Number in
+  let metadata = M.make ~version:V.V_1 ~mode:Mode.Number ~error_correction_level:E.Low in
+  let generator = data_to_generator ("01234567" |> String.to_seq |> List.of_seq) in
+  let encoded = Encoder.encode ~metadata ~generator |> Result.get_ok in
+  let code_word = CW.make ~segments:[ encoded ] ~metadata in
+  let expected = [ 16; 32; 12; 86; 97; 128 ] @ fill_codewords 13 |> List.map Stdint.Uint8.of_int |> Array.of_list in
+
+  Alcotest.(check' code_word_testable) ~msg:"codeword" ~expected ~actual:code_word.CW.words
+
 let tests =
   [
     Alcotest.test_case "can make codewords from empty data" `Quick make_empty_data_test;
     Alcotest.test_case "can make codewords from filled data" `Quick make_full_data_test;
+    Alcotest.test_case "can make codewords from number" `Quick make_number_test;
   ]

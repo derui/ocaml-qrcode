@@ -20,7 +20,7 @@ let bit_test () =
 let gf256_test () =
   let module G = Ocaml_qrcode_core.Type.GF256 in
   let uint8 = Stdint.Uint8.of_int in
-  Alcotest.(check' uint8_testable) ~msg:"1 + 7" ~expected:(uint8 0b110) ~actual:G.(uint8 1 + uint8 7);
+  Alcotest.(check' uint8_testable) ~msg:"1 + 7 = 6" ~expected:(uint8 0b110) ~actual:G.(uint8 1 + uint8 7);
   Alcotest.(check' uint8_testable) ~msg:"1 * 7 = 7" ~expected:(uint8 7) ~actual:G.(uint8 1 * uint8 7);
   Alcotest.(check' uint8_testable) ~msg:"8 * 25 = 200" ~expected:(uint8 200) ~actual:G.(uint8 8 * uint8 25);
   Alcotest.(check' uint8_testable)
