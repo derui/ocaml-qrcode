@@ -18,10 +18,16 @@ end
 
 type encoded = (t, Encoding_error.t) result
 
+type decoded = char list
+
 type data_generator = unit -> char option
 
-module type S = sig
+module type Enc = sig
   val encode : metadata:Metadata.t -> generator:data_generator -> encoded
+end
+
+module type Dec = sig
+  val decode : t -> decoded
 end
 
 module Support = struct

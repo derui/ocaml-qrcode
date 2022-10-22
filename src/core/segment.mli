@@ -17,12 +17,20 @@ end
 type encoded = (t, Encoding_error.t) result
 (** type of encoding result *)
 
+type decoded = char list
+(** type of decoding result *)
+
 type data_generator = unit -> char option
 (** type of data generator. Return None if no data *)
 
-module type S = sig
+module type Enc = sig
   val encode : metadata:Metadata.t -> generator:data_generator -> encoded
   (** [encode ~metadata ~generator] get a segment from data generated from generator and metadata *)
+end
+
+module type Dec = sig
+  val decode : t -> decoded
+  (* [decode t] get a original data from [t] *)
 end
 
 module Support : sig

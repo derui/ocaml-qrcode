@@ -18,7 +18,7 @@ let encode' ~metadata ~generator ~list_to_number_data =
 
       Ok (S.make ~mode:metadata.Metadata.mode ~version:metadata.version ~data:stream ~size:(List.length data))
 
-module Number : S.S = struct
+module Number : S.Enc = struct
   let to_number = function
     | '0' .. '9' as v -> Ok (Char.code v - Char.code '0')
     | _ as v -> Error (S.Encoding_error.Invalid_data (Printf.sprintf "Can not use character '%c' in number mode" v))
@@ -47,7 +47,7 @@ module Number : S.S = struct
   let encode ~metadata ~generator = encode' ~metadata ~generator ~list_to_number_data
 end
 
-module Alphabet : S.S = struct
+module Alphabet : S.Enc = struct
   let to_number = function
     | '0' .. '9' as v -> Ok (Char.code v - Char.code '0')
     | 'A' .. 'Z' as v -> Ok (Char.code v - Char.code 'A' + 10)
@@ -80,7 +80,7 @@ module Alphabet : S.S = struct
   let encode ~metadata ~generator = encode' ~metadata ~generator ~list_to_number_data
 end
 
-module Byte : S.S = struct
+module Byte : S.Enc = struct
   let to_number v = Ok (Char.code v)
 
   let list_to_number_data list =
