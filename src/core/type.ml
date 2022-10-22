@@ -13,6 +13,8 @@ module Bit = struct
   let ( + ) = xor
 
   let ( * ) a b = match (a, b) with `Zero, `Zero | `One, `Zero | `Zero, `One -> `Zero | `One, `One -> `One
+
+  let to_int = function `Zero -> 0 | `One -> 1
 end
 
 module GF256 = struct

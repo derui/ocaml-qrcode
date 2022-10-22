@@ -159,6 +159,20 @@ let byte_list_test () =
       ]
     ~actual:ret
 
+let next_int32_test () =
+  let stream = B.create () in
+  let data = 0b1011l in
+  let stream = B.put_int32 ~data ~bits:8 stream in
+  let actual = B.next_int32 stream in
+  Alcotest.(check' int32) ~msg:"position 1" ~expected:data ~actual
+
+let next_int32_with_size_test () =
+  let stream = B.create () in
+  let data = 0b1011l in
+  let stream = B.put_int32 ~data ~bits:4 stream in
+  let actual = B.next_int32 ~size:2 stream in
+  Alcotest.(check' int32) ~msg:"" ~expected:(0b10 |> Int32.of_int) ~actual
+
 let tests =
   [
     Alcotest.test_case "can create new stream" `Quick create_test;
@@ -174,4 +188,6 @@ let tests =
     Alcotest.test_case "can put int32 that leading zero bits" `Quick put_zero_leading_int32_test;
     Alcotest.test_case "can concatenate two bit streams" `Quick concat_test;
     Alcotest.test_case "can convert byte list" `Quick byte_list_test;
+    Alcotest.test_case "can get next int32 from stream" `Quick next_int32_test;
+    Alcotest.test_case "can get next int32 with size" `Quick next_int32_with_size_test;
   ]

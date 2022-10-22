@@ -29,6 +29,10 @@ val put_byte : data:Stdint.uint8 -> t -> t
 val next : t -> bit_result
 (** [next t] get a next bit. If read position of stream is reached end of stream, return [Eos] *)
 
+val next_int32 : ?size:int -> t -> int32
+(** [next_int32 ~size t] get a next 32bit data as [int32]. Return 0L if stream is empty. If stream does not have 32-bit
+    or least, return only bits in stream. When [size] is given, only bits that is given size. *)
+
 val concat : first:t -> last:t -> t
 (** [concat ~first ~last] concatenate two bit streams [first] and [last]. Use [first] as first, then [last] as next of
     it. *)

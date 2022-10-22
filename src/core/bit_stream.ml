@@ -83,6 +83,19 @@ let next t =
     let value = Stdint.Uint128.(logand t.buffer.(index) bit_mask) in
     if Stdint.Uint128.(compare zero value) = 0 then Continue `Zero else Continue `One)
 
+let next_int32 ?(size = 32) t =
+  assert (size <= 32 && size >= 0);
+  let rec loop size' accum =
+    if size' >= size then accum
+    else
+      match next t with
+      | Eos -> accum
+      | Continue b ->
+          let data = Type.Bit.to_int b in
+          loop (succ size') Int32.(add (shift_left accum 1) (of_int data))
+  in
+  loop 0 0l
+
 let to_list t =
   let rec loop accum = match next t with Eos -> List.rev accum | Continue b -> loop (b :: accum) in
   loop []
