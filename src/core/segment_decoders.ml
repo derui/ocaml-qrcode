@@ -70,5 +70,19 @@ module Alphabet : S.Dec = struct
 end
 
 module Byte : S.Dec = struct
-  let decode _ = failwith ""
+  let decode (t : Segment.t) =
+    assert (t.mode = Mode.Byte);
+    let bit_list = Bit_stream.to_list t.data in
+    let bit_size = List.length bit_list in
+    let full_data_count = bit_size / 8 in
+    let bit_stream = Bit_stream.clone t.data in
+
+    let rec loop count accum =
+      if count <= 0 then accum
+      else
+        let data = Bit_stream.next_int32 ~size:8 bit_stream |> Int32.to_int in
+        loop (pred count) (data :: accum)
+    in
+    let data = loop full_data_count [] in
+    List.rev data |> List.map Char.chr
 end
